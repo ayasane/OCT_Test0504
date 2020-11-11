@@ -3,6 +3,7 @@
 <head>
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
     <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
 </head>
@@ -19,13 +20,74 @@
       };
       var welcome = {
         type: "html-keyboard-response",
-        stimulus: "こんにちは！"
+        stimulus: "こんにちは！キーを押すと次の画面に移ります。"
+      };
+
+      var s1 = {
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli01.png"/></div>',
+        correct_key: 49
+      }
+      var s2 = {
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli02.png"/></div>',
+        correct_key: 50
+      }
+      var s3 = {
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli03.png"/></div>',
+        correct_key: 51
+      }
+      var s4 = {
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli04.png"/></div>',
+        correct_key: 52
+      }
+      var s5 = {
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli05.png"/></div>',
+        correct_key: 53
+      }
+      var s6 = {
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli06.png"/></div>',
+        correct_key: 54
+      }
+      var s7 = {
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli07.png"/></div>',
+        correct_key: 55
+      }
+      var s8 = {
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli08.png"/></div>',
+        correct_key: 56
+      }
+      var s9 = {
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli09.png"/></div>',
+        correct_key: 57
+      }
+
+      var stimulus_arr = [s1,s2,s3,s4,s5,s6,s7,s8,s9];
+      var repetation = 1
+      var all_stim = jsPsych.randomization.repeat(stimulus_arr, repetation)
+      console.log(all_stim)
+      var thread = {
+        timeline: [{
+            type: "html-button-response",
+            stimulus: jsPsych.timelineVariable('stimulus'),
+            choices: [
+                '<div style="position: absolute; top: 80%; left: 10%"><img src="img/task08_DSST/stimuli01.png"/></div>',
+                '<div style="position: absolute; top: 80%; left: 20%"><img src="img/task08_DSST/stimuli02.png"/></div>',
+                '<div style="position: absolute; top: 80%; left: 30%"><img src="img/task08_DSST/stimuli03.png"/></div>',
+                '<div style="position: absolute; top: 80%; left: 40%"><img src="img/task08_DSST/stimuli04.png"/></div>',
+                '<div style="position: absolute; top: 80%; left: 50%"><img src="img/task08_DSST/stimuli05.png"/></div>',
+                '<div style="position: absolute; top: 80%; left: 60%"><img src="img/task08_DSST/stimuli06.png"/></div>',
+                '<div style="position: absolute; top: 80%; left: 70%"><img src="img/task08_DSST/stimuli07.png"/></div>',
+                '<div style="position: absolute; top: 80%; left: 80%"><img src="img/task08_DSST/stimuli08.png"/></div>',
+                '<div style="position: absolute; top: 80%; left: 90%"><img src="img/task08_DSST/stimuli09.png"/></div>',
+            ],
+        }],
+        timeline_variables: all_stim,
       };
 
       /* タイムラインの設定 */
       var timeline = [];
       timeline.push(fullscreen);
       timeline.push(welcome);
+      timeline.push(thread);
 
       /* 課題開始 */
       jsPsych.init({
@@ -38,3 +100,5 @@
     </script>
 </body>
 </html>
+
+
