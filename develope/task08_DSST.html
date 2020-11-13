@@ -24,50 +24,51 @@
       };
 
       var s1 = {
-        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli01.png"/></div>',
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli01.png" width="100px" border="2" style="border-color: #42f5da"/></div>',
         correct_response: '1'
       }
       var s2 = {
-        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli02.png"/></div>',
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli02.png" width="100px" border="2" style="border-color: #42f5da"/></div>',
         correct_response: '2'
       }
       var s3 = {
-        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli03.png"/></div>',
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli03.png" width="100px" border="2" style="border-color: #42f5da"/></div>',
         correct_response: '3'
       }
       var s4 = {
-        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli04.png"/></div>',
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli04.png" width="100px" border="2" style="border-color: #42f5da"/></div>',
         correct_response: '4'
       }
       var s5 = {
-        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli05.png"/></div>',
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli05.png" width="100px" border="2" style="border-color: #42f5da"/></div>',
         correct_response: '5'
       }
       var s6 = {
-        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli06.png"/></div>',
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli06.png" width="100px" border="2" style="border-color: #42f5da"/></div>',
         correct_response: '6'
       }
       var s7 = {
-        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli07.png"/></div>',
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli07.png" width="100px" border="2" style="border-color: #42f5da"/></div>',
         correct_response: '7'
       }
       var s8 = {
-        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli08.png"/></div>',
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli08.png" width="100px" border="2" style="border-color: #42f5da"/></div>',
         correct_response: '8'
       }
       var s9 = {
-        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli09.png"/></div>',
+        stimulus: '<div style="position: absolute; top: 30%; left: 50%"><img src="img/task08_DSST/stimuli09.png" width="100px" border="2" style="border-color: #42f5da"/></div>',
         correct_response: '9'
       }
 
       var stimulus_arr = [s1,s2,s3,s4,s5,s6,s7,s8,s9];
-      var repetation = 1
-      var all_stim = jsPsych.randomization.repeat(stimulus_arr, repetation)
-      console.log(all_stim)
+      var repetation = 1;
+      var all_stim = jsPsych.randomization.repeat(stimulus_arr, repetation);
+      console.log(all_stim);
       var thread = {
         timeline: [{
             type: "html-button-response",
             stimulus: jsPsych.timelineVariable('stimulus'),
+            correct_response: jsPsych.timelineVariable('correct_response'),
             choices: [
                 '<div style="position: absolute; top: 80%; left: 10%"><img src="img/task08_DSST/stimuli01.png"/></div>',
                 '<div style="position: absolute; top: 80%; left: 20%"><img src="img/task08_DSST/stimuli02.png"/></div>',
@@ -79,7 +80,16 @@
                 '<div style="position: absolute; top: 80%; left: 80%"><img src="img/task08_DSST/stimuli08.png"/></div>',
                 '<div style="position: absolute; top: 80%; left: 90%"><img src="img/task08_DSST/stimuli09.png"/></div>',
             ],
-            button_html: '<button class="jspsych-btn">%choice%</button>',
+            button_html: '%choice%',
+            on_finish: function(data){
+                console.log(data.button_pressed);
+                console.log(data.correct_response);
+                if(data.button_pressed==data.correct_response){
+                    data.correct = true;
+                } else {
+                    data.correct = false;
+                }
+            }
         }],
         timeline_variables: all_stim,
       };
