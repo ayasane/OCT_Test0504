@@ -17,15 +17,33 @@
         button_label: "全画面表示に切り替え",
         fullscreen_mode: true
       };
-      var welcome = {
+
+      // ランダムな間隔(2~10秒)で始まるカウントアップを素早く止めるタスク
+      //反応時間を1秒間フィードバックする(フィードバック時間は上記刺激提示間隔に含まれる)
+      var interval = {
         type: "html-keyboard-response",
-        stimulus: "こんにちは！"
-      };
+        stimulus: '<div style="position: absolute; top: 20%; left: 50%"><img src="img/task10_PVT/rectangle.png" width="300px" /></div>',
+        trial_duration: function(){
+            var rand = Math.round(Math.random() * 1000) + 2000;
+            console.log("[DEBUG] interval duration: " + rand);
+            return rand;
+        }
+      }
+      var response = {
+        type: "html-keyboard-response",
+        stimulus: function(data){
+            var message = '<div style="font-size:60px"; />' + data.rt + '</div>'
+            return message
+        },
+        choices: ["space"],
+        prompt: "スペースキーを押してカウントアップを止めてください。",
+      }
 
       /* タイムラインの設定 */
       var timeline = [];
-      timeline.push(fullscreen);
-      timeline.push(welcome);
+      //timeline.push(fullscreen);
+      timeline.push(interval);
+      timeline.push(response);
 
       /* 課題開始 */
       jsPsych.init({
