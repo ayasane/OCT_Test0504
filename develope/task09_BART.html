@@ -1,40 +1,163 @@
 <!DOCTYPE html>
 <html>
-<head>
+  <head>
+    <title>BART experiment</title>
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
-    <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
-    <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
-</head>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-image-keyboard-response.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-image-button-response.js"></script>
 
-<body>
-    <script type="text/javascript">
+    <script src="src/jspsych-psychophysics.js"></script>
 
-      /* 課題に関するコードを以下に書く */
-      var fullscreen = {
-        type: 'fullscreen',
-        message: '<p>以下のボタンをクリックすると，画面は全画面表示に切り替わります。全画面表示を止めたい場合はEscキーを押してください。</p>',
-        button_label: "全画面表示に切り替え",
-        fullscreen_mode: true
+    <script src="src/jspsych-6.1.0/plugins/jspsych-survey-text.js"></script>
+    <link href="src/jspsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css"></link>
+  </head>
+  <body></body>
+
+  <script>
+
+  var Ins_block = {
+      type: 'html-keyboard-response',
+      stimulus: '<p>とりあえず <b>Fキー</b> 押して！とりあえず４試行。音出ない(TT)<p>' +
+      "<p>Throughout the task, you will be presented with 21 balloons separately. For each balloon you can click on the button labelled INFLATE to increase the size of the balloon. Each time you increase the balloon size you will increase the amount of tickets in the prize draw for three separate prize draws of 20, 15 and 10 pounds. You currently have 20 tickets. You will accumulate 1 ticket in a temporary bank for each pump. You will be shown the amount you have accumulated in your temporary bank.</p>" +
+      '<p> stuff and things</p>',
+      choices: ['f']
+  }
+
+  var ID_Ins_block = {
+    type: 'survey-text',
+    questions: ['Please enter the identification number which was generated just a second ago. This should be a combination of 10 digits then your favourite film/book/magazine/song and a randomly selected fictional character. You can copy and paste this into the text input section']
+  }
+
+  var pointTotal = 0;
+  var pointPotential = 0;
+  var pump_count = 0;
+  var bulloon_condition = 0;
+  var trialNum = 1;
+  var size = 0.2;
+
+  var sounds = {
+      obj_type: 'sound', // means a rectangle
+      file: 'audio/task09_BART/inflate.mp3',
+  }
+
+  var summarytext = {
+    obj_type: 'text',
+    content: function(){return pointPotential},
+    startX: 500,
+    startY: 250,
+    prompt: function(){ return pointPotential},
+    //font:
+  }
+
+  var Text_summary = {
+    type: 'psychophysics',
+    stimuli: [{obj_type: 'image',
+                file: 'img/task09_BART/balloon1.jpg',
+                scale: 0.1,
+                startX: 500,
+                startY: 400,
+                width: 1,
+                height:1,
+              },sounds,summarytext],
+    //stimulus: 'img/task09_BART/balloon1.jpg',
+
+    response_type: 'button',
+    button_choices: ['膨らます','今の金額で受け取る'],
+    canvas_width: 1000,
+    canvas_height: 500,
+    background_color: 'white',
+    prompt: function(){
+      return '<div align="left">' +
+      '<p>風船： ' + trialNum + " 個目（全30個）</p>" +
+      "<p><b>獲得できる可能性の報酬： " + pointPotential + "ポイント</b>" +
+      "　（膨らました回数：　" + pump_count + "回）</p>" +
+      "<p><b>これまでの獲得合計ポイント：　" + pointTotal + "ポイント</b></p></div>"
+    },
+    response_ends_trial: true,
+    on_start: function(Text_summary){
+      Text_summary.stimuli[0].scale = size;
+      Text_summary.stimuli[0].startY = 400 - 15/2* pump_count;
+      if(bulloon_condition == 1){ // 割れた
+        Text_summary.stimuli[0].file =  'img/task09_BART/balloon2.jpg';
+        Text_summary.stimuli[0].startY = 400 - 15/2* (pump_count-1);
       };
-      var welcome = {
-        type: "html-keyboard-response",
-        stimulus: "こんにちは！"
-      };
+      if(bulloon_condition != 0){
+        Text_summary.trial_duration = 2000;
+        Text_summary.response_start_time = 3000;
+        Text_summary.button_choices =['ーーーー','ーーーーーーーーー'];
+      }
+    },
+    on_end: function(Text_summary){
+      Text_summary.stimuli[0].file =  'img/task09_BART/balloon1.jpg';
+      Text_summary.trial_duration = 200000000000;
+      Text_summary.button_choices =['膨らます','今の金額で受け取る'];
+    },
+  }
 
-      /* タイムラインの設定 */
-      var timeline = [];
-      timeline.push(fullscreen);
-      timeline.push(welcome);
-
-      /* 課題開始 */
-      jsPsych.init({
-        timeline: timeline,
-        on_finish: function() {
-          jsPsych.data.displayData();
+  var Trial = {
+    timeline: [Text_summary],
+		//choices: ['f','j'],
+		//timing_post_trial: bpop,
+    loop_function: function(data,Trial){
+      if(data.values()[0].button_pressed == 0){
+        pump_count += 1;
+        if(pump_count == balloon_max[(trialNum-1)] ){//上限に達した時
+          bulloon_condition = 1;
+          pointPotential = 0;
+          return true;
+        } else {
+          //jsPsych.data.addDataToLastTrial({banked: true});
+          size += 0.05;
+          pointPotential += 5;
+          return true;
         }
-      });
-      
-    </script>
-</body>
+      } else if(data.values()[0].button_pressed == 1) {//途中でやめた
+        bulloon_condition = 2;
+        pointTotal += pointPotential;
+        return true;
+      } else {
+        pump_count = 0;
+        bulloon_condition = 0;
+        pointPotential = 0;
+        size = 0.2;
+        trialNum += 1;
+        return false;
+      }
+    },
+  };
+
+var balloon_max = [5,25,15,4];
+
+var TestProcedure = {
+  timeline: [Trial],
+  timeline_variables: balloon_max,
+  randomize_order: false,
+  repetitions: 1
+}
+
+  var timeline = [];
+  timeline.push(Ins_block);
+  //timeline.push(ID_Ins_block);
+  //timeline.push(Trial);
+  timeline.push(TestProcedure);
+
+
+  var images = ['img/task09_BART/balloon1.jpg', 'img/task09_BART/balloon2.jpg'];
+  //var audio = ['audio/task09_BART/casino.mp3', 'audio/task09_BART/explosion.mp3','audio/task09_BART/inflate.mp3'];
+  //var audio = ['audio/task09_BART/inflate.mp3'];
+
+
+  jsPsych.init({
+    timeline: timeline,
+    //use_webaudio: false,
+    //preload_audio: audio,
+    preload_images: images,
+
+    on_finish: function() {
+	    jsPsych.data.displayData();
+	  }
+  });
+
+  </script>
 </html>
