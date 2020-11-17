@@ -4,11 +4,7 @@
     <title>BART experiment</title>
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
-    <script src="src/jspsych-6.1.0/plugins/jspsych-image-keyboard-response.js"></script>
-    <script src="src/jspsych-6.1.0/plugins/jspsych-image-button-response.js"></script>
-
     <script src="src/jspsych-psychophysics.js"></script>
-
     <script src="src/jspsych-6.1.0/plugins/jspsych-survey-text.js"></script>
     <link href="src/jspsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css"></link>
   </head>
@@ -18,7 +14,7 @@
 
   var Ins_block = {
       type: 'html-keyboard-response',
-      stimulus: '<p>とりあえず <b>Fキー</b> 押して！とりあえず４試行。音出ない(TT)<p>' +
+      stimulus: '<p>とりあえず <b>Fキー</b> 押して！とりあえず４試行。ローカルのファイルを参照する時は音は出ない模様<p>' +
       "<p>Throughout the task, you will be presented with 21 balloons separately. For each balloon you can click on the button labelled INFLATE to increase the size of the balloon. Each time you increase the balloon size you will increase the amount of tickets in the prize draw for three separate prize draws of 20, 15 and 10 pounds. You currently have 20 tickets. You will accumulate 1 ticket in a temporary bank for each pump. You will be shown the amount you have accumulated in your temporary bank.</p>" +
       '<p> stuff and things</p>',
       choices: ['f']
@@ -38,16 +34,7 @@
 
   var sounds = {
       obj_type: 'sound', // means a rectangle
-      file: 'audio/task09_BART/inflate.mp3',
-  }
-
-  var summarytext = {
-    obj_type: 'text',
-    content: function(){return pointPotential},
-    startX: 500,
-    startY: 250,
-    prompt: function(){ return pointPotential},
-    //font:
+      file: '',
   }
 
   var Text_summary = {
@@ -59,7 +46,7 @@
                 startY: 400,
                 width: 1,
                 height:1,
-              },sounds,summarytext],
+              },sounds],
     //stimulus: 'img/task09_BART/balloon1.jpg',
 
     response_type: 'button',
@@ -78,11 +65,31 @@
     on_start: function(Text_summary){
       Text_summary.stimuli[0].scale = size;
       Text_summary.stimuli[0].startY = 400 - 15/2* pump_count;
-      if(bulloon_condition == 1){ // 割れた
-        Text_summary.stimuli[0].file =  'img/task09_BART/balloon2.jpg';
-        Text_summary.stimuli[0].startY = 400 - 15/2* (pump_count-1);
-      };
-      if(bulloon_condition != 0){
+
+      if(pump_count != 0){
+        if(bulloon_condition == 0){ // 膨らます
+          Text_summary.stimuli[1].file = 'audio/task09_BART/inflate.mp3';
+        }
+
+        if(bulloon_condition == 1){ // 割れた
+          Text_summary.stimuli[0].file =  'img/task09_BART/balloon2.jpg';
+          Text_summary.stimuli[0].startY = 400 - 15/2* (pump_count-1);
+          Text_summary.stimuli[1].file = 'audio/task09_BART/explosion.mp3';
+        }
+
+        if(bulloon_condition == 2){ // 受け取った
+          Text_summary.stimuli[1].file = 'audio/task09_BART/casino.mp3';
+        }
+
+        if(bulloon_condition != 0){ // 割れた・受け取った　共通
+          Text_summary.trial_duration = 2000;
+          Text_summary.response_start_time = 3000;
+          Text_summary.button_choices =['ーーーー','ーーーーーーーーー'];
+        }
+      }
+
+      if(pump_count == 0 & bulloon_condition == 2){ //ふくらまさずに受け取った場合
+        Text_summary.stimuli[1].file = 'audio/task09_BART/casino.mp3';
         Text_summary.trial_duration = 2000;
         Text_summary.response_start_time = 3000;
         Text_summary.button_choices =['ーーーー','ーーーーーーーーー'];
@@ -97,8 +104,6 @@
 
   var Trial = {
     timeline: [Text_summary],
-		//choices: ['f','j'],
-		//timing_post_trial: bpop,
     loop_function: function(data,Trial){
       if(data.values()[0].button_pressed == 0){
         pump_count += 1;
@@ -139,19 +144,15 @@ var TestProcedure = {
   var timeline = [];
   timeline.push(Ins_block);
   //timeline.push(ID_Ins_block);
-  //timeline.push(Trial);
   timeline.push(TestProcedure);
 
-
   var images = ['img/task09_BART/balloon1.jpg', 'img/task09_BART/balloon2.jpg'];
-  //var audio = ['audio/task09_BART/casino.mp3', 'audio/task09_BART/explosion.mp3','audio/task09_BART/inflate.mp3'];
-  //var audio = ['audio/task09_BART/inflate.mp3'];
-
+  var audio = ['audio/task09_BART/casino.mp3', 'audio/task09_BART/explosion.mp3','audio/task09_BART/inflate.mp3'];
 
   jsPsych.init({
     timeline: timeline,
     //use_webaudio: false,
-    //preload_audio: audio,
+    preload_audio: audio,
     preload_images: images,
 
     on_finish: function() {
