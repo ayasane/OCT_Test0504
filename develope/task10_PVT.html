@@ -4,6 +4,7 @@
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-animation"></script>
     <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
 </head>
 
@@ -29,12 +30,12 @@
             return rand;
         }
       }
+
       var response = {
         type: "html-keyboard-response",
-        stimulus: function(data){
-            var message = '<div style="font-size:60px"; />' + data.rt + '</div>'
-            return message
-        },
+        stimulus: ['<div style="position: absolute; top: 20%; left: 50%"><img src="img/task10_PVT/rectangle.png" width="300px" /></div>',
+                   '<div style="position: absolute; top: 25%; left: 55%"><font size = "6"><p>PUSH SPACE</p></font></div>'
+                  ],
         choices: ["space"],
         prompt: "スペースキーを押してカウントアップを止めてください。",
       }
@@ -56,3 +57,4 @@
     </script>
 </body>
 </html>
+
