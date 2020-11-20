@@ -4,7 +4,7 @@
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
-    <script src="src/jspsych-6.1.0/plugins/jspsych-animation"></script>
+    <script src="src/jspsych-6.1.0/plugins/smura-psychomotor-vigilance.js"></script>
     <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
 </head>
 
@@ -19,23 +19,11 @@
         fullscreen_mode: true
       };
 
-      // ランダムな間隔(2~10秒)で始まるカウントアップを素早く止めるタスク
-      //反応時間を1秒間フィードバックする(フィードバック時間は上記刺激提示間隔に含まれる)
-      var interval = {
-        type: "html-keyboard-response",
-        stimulus: '<div style="position: absolute; top: 20%; left: 50%"><img src="img/task10_PVT/rectangle.png" width="300px" /></div>',
-        trial_duration: function(){
-            var rand = Math.round(Math.random() * 1000) + 2000;
-            console.log("[DEBUG] interval duration: " + rand);
-            return rand;
-        }
-      }
-
-      var response = {
-        type: "html-keyboard-response",
-        stimulus: ['<div style="position: absolute; top: 20%; left: 50%"><img src="img/task10_PVT/rectangle.png" width="300px" /></div>',
-                   '<div style="position: absolute; top: 25%; left: 55%"><font size = "6"><p>PUSH SPACE</p></font></div>'
-                  ],
+      var thread = {
+        type: "psychomotor-vigilance",
+        image: '<div style="position: absolute; top: 20%; left: 50%"><img src="img/task10_PVT/rectangle.png" width="300px" /></div>',
+        max_countup: 1000,
+        repeat: 1,
         choices: ["space"],
         prompt: "スペースキーを押してカウントアップを止めてください。",
       }
@@ -43,8 +31,7 @@
       /* タイムラインの設定 */
       var timeline = [];
       //timeline.push(fullscreen);
-      timeline.push(interval);
-      timeline.push(response);
+      timeline.push(thread);
 
       /* 課題開始 */
       jsPsych.init({
