@@ -24,18 +24,25 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
       repeat: {
         type: jsPsych.plugins.parameterType.INT, // number of repeat thread
         default: 1
-      }
+      },
       choices: {
         type: jsPsych.plugins.parameterType.KEYCODE,
-        pretty_name: "Choices"
+        pretty_name: "Choices",
         default: jsPsych.ALL_KEYS,
         array: true,
         description: 'Keys subject uses to respond to stimuli.'
-      }
+      },
+      button_html: {
+        type: jsPsych.plugins.parameterType.STRING,
+        pretty_name: 'Button HTML',
+        default: '<button class="jspsych-btn">%choice%</button>',
+        array: true,
+        description: 'The html of the button. Can create own style.'
+      },
       prompt: {
         type: jsPsych.plugins.parameterType.STRING,
         pretty_name: 'Prompt',
-        default: null
+        default: null,
         description: 'Any content here will be displayed below stimulus.'
       }
     }
@@ -45,51 +52,89 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
 
     var countN = 0;
 
-    // interval (display only rectangle)
-    function interval() {
-        display_element.innerHTML = '<div style="position:absolute; top:20%; left:50%"><img src="' + trial.image + 'width="300px" /></div>';
-        var display_time = function() {
-            var rand = Math.round(Math.random() * 1000) + 2000;
-            console.log("[smura-psychomotor-vigilance] interval duration: " + rand);
-            return rand;
-        };
+    console.log("[DEBUG] load img : " + trial.image);
+    function display_time() {
+        var rand = Math.round(Math.random() * 1000) + 2000;
+        console.log("[smura-psychomotor-vigilance] interval duration: " + rand);
+        return rand;
     };
 
-    // display feedback (response time)
-    var feedback = setTimeout(function(rtime) {
-        display_element.innerHTML = '<div style="position:absolute; top:20%; left:50%"><img src="' + trial.image + 'width="300px" /></div>';
-        display_element.innerHTML = '<div style="position:absolute; top:30%; left:60%"><font size="12"><p>' + rtime + '</p></font></div>';
-    }, 500);
+    // store response
+    var response = {
+      rt: null,
+      button: null
+    };
 
-    function get_RT(startTime, performance) {
-        return startTime - performance.now()
+    var html = '<div id="jspsych-html-button-response-stimulus">'+trial.stimulus+'</div>';
+    var buttons = [];
+    if (Array.isArray(trial.button_html)) {
+      if (trial.button_html.length == trial.choices.length) {
+        buttons = trial.button_html;
+      } else {
+        console.error('Error in html-button-response plugin. The length of the button_html array does not equal the length of the choices array');
+      }
+    } else {
+      for (var i = 0; i < trial.choices.length; i++) {
+        buttons.push(trial.button_html);
+      }
     }
-    // start count up
-    var count_up = setInterval(function(startTime) {
-        var rtime = function() { return startTime - performance.now()}
-        display_element.innerHTML = '<div style="position:absolute; top:20%; left:50%"><img src="' + trial.image + 'width="300px" /></div>';
-        display_element.innerHTML = '<div style="position:absolute; top:30%; left:60%"><font size="12"><p>' + rtime + '</p></font></div>';
-        return rtime
-    }, 1);
-
+    html += '<div id="jspsych-html-button-response-btngroup">';
+    for (var i = 0; i < trial.choices.length; i++) {
+      var str = buttons[i].replace(/%choice%/g, trial.choices[i]);
+      html += '<div class="jspsych-html-button-response-button" style="display: inline-block; margin:'+trial.margin_vertical+' '+trial.margin_horizontal+'" id="jspsych-html-button-response-button-' + i +'" data-choice="'+i+'">'+str+'</div>';
+    }
+    html += '</div>';
+    html += trial.prompt;
     // main thread
-    var thread = setInterval(function() {
-        interval();
-        rtime = count_up(performance.now());
-        feedback(rtime);
+    setInterval(function() {
+      // interval
+      setTimeout(function() {
+        html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + '" width="300px"/></div>';
+      }, display_time());
+      // count up
+      var start_time = performance.now();
+      setInterval(function() {
+        var rtime = Math.floor(performance.now() - start_time);
+        html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + '" width="300px"/></div>';
+        html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rtime + '</p></font></div>';
+        display_element.innerHTML = html;
+        if (rtime >= trial.max_countup){
+          after_response("Null", trial.max_countup);
+        }
+        // add event listeners to buttons
+        for (var i = 0; i < trial.choices.length; i++) {
+          display_element.querySelector('#jspsych-html-button-response-button-' + i).addEventListener('click', function(e){
+            var choice = e.currentTarget.getAttribute('data-choice'); // don't use dataset for jsdom compatibility
+            after_response(choice, rtime);
+          });
+        }
+      },5);
     }, 25)
 
+    function after_response(choice, rt) {
 
-    var after_response = function(info) {
-        responses.push({
-        key_press: info.key,
-        rt: info.rt,
-        stimulus: current_stim
-      });
+      // measure rt
+      //var end_time = performance.now();
+      //var rt = end_time - start_time;
+      response.button = choice;
+      response.rt = rt;
 
-      // after a valid response, the stimulus will have the CSS class 'responded'
-      // which can be used to provide visual feedback that a response was recorded
-      display_element.querySelector('#jspsych-animation-image').className += ' responded';
+      // display rt
+      display_element.innerHTML = '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + 'width="300px"/></div>';
+      display_element.innerHTML = '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rt + '</p></font></div>';
+
+      console.log("[smura-psychomotor-vigilance] response time: " + rt);
+
+      // disable all the buttons after a response
+      var btns = document.querySelectorAll('.jspsych-html-button-response-button button');
+      for(var i=0; i<btns.length; i++){
+        //btns[i].removeEventListener('click');
+        btns[i].setAttribute('disabled', 'disabled');
+      }
+
+      //if (trial.response_ends_trial) {
+        //end_trial();
+      //}
     };
 
     var response_listener = jsPsych.pluginAPI.getKeyboardResponse({
