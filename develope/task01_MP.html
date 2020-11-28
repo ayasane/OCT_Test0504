@@ -10,6 +10,8 @@
 <body>
     <script type="text/javascript">
 
+
+
       /* 課題に関するコードを以下に書く */
       var fullscreen = {
         type: 'fullscreen',
@@ -21,11 +23,20 @@
         type: "html-keyboard-response",
         stimulus: "こんにちは！"
       };
+      var instruction = {
+        type: "html-keyboard-response",
+        stimulus: "教示？"
+      };
+
+      var instruction = {
+        type: "html-keyboard-response",
+        stimulus: "練習？"
+      };
 
       /* タイムラインの設定 */
       var timeline = [];
       timeline.push(fullscreen);
-      timeline.push(welcome);
+      timeline.push(welcome,instruction);
 
       /* 課題開始 */
       jsPsych.init({
@@ -34,7 +45,7 @@
           jsPsych.data.displayData();
         }
       });
-      
+
     </script>
 </body>
 </html>
