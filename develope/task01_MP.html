@@ -6,25 +6,10 @@
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
     <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
-    <style>
-      button.button1{
-        background-color: #248;
-        border-style:none;
-        font-size:500px;
-      }
-      button.button2{
-        background-color: #248;
-        border-style:none;
-        font-size:250px;
-      }
-     </style>
 </head>
 
 <body>
     <script type="text/javascript">
-
-
-
       /* 課題に関するコードを以下に書く */
       var fullscreen = {
         type: 'fullscreen',
@@ -50,27 +35,41 @@
           type: 'html-keyboard-response',
           stimulus: '<div style="font-size:60px;">+</div>',
           choices: jsPsych.NO_KEYS,
-          trial_duration: 1000
+          trial_duration: 2000
     }
+
+      var boxsize=[768,384,192,96,48,24,12,6];
+      var position=[30,20,50,10,0,40,10];
 
       /* タイムラインの設定 */
       var timeline = [];
       var test = [];
+      
       /*timeline.push(fullscreen);*/
       timeline.push(welcome,instruction,fixation);
 
-      for(var i=1; i<3; i++){
-          var buttontype='<button type="button" class="button'+i+'">push</button>';
-          test[i] = {
-          type: 'html-button-response',
-          stimulus: '<p style="color: red; font-size: 48px; font-weight: bold;">GREEN</p>',
-          button_html:buttontype,
-          choices: ['Green']
-          /*prompt: "<p>What color is this word?</p>"*/
-        };
-      timeline.push(test[i]);
-      };
+      for(var i=0; i<7; i++){
+          var buttontype=
+          '<button type="button" \
+            style="\
+              width:'+boxsize[i]+'px;\
+              height:'+boxsize[i]+'px;\
+              position:absolute;\
+              left:'+position[i]+'%;\
+              top:50%;\
+              background-color:#24d;\
+              color:#24d";\
+              border-style:none;>+\
+            </button>';
 
+          test[i] = {
+            type: 'html-button-response',
+            stimulus: [],
+            button_html:buttontype,
+            choices: ['G']
+          };
+          timeline.push(test[i]);
+      };
 
       /* 課題開始 */
       jsPsych.init({
