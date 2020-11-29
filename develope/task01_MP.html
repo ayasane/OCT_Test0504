@@ -3,8 +3,21 @@
 <head>
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
     <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
+    <style>
+      button.button1{
+        background-color: #248;
+        border-style:none;
+        font-size:500px;
+      }
+      button.button2{
+        background-color: #248;
+        border-style:none;
+        font-size:250px;
+      }
+     </style>
 </head>
 
 <body>
@@ -33,10 +46,31 @@
         stimulus: "練習？"
       };
 
+      var fixation = {
+          type: 'html-keyboard-response',
+          stimulus: '<div style="font-size:60px;">+</div>',
+          choices: jsPsych.NO_KEYS,
+          trial_duration: 1000
+    }
+
       /* タイムラインの設定 */
       var timeline = [];
-      timeline.push(fullscreen);
-      timeline.push(welcome,instruction);
+      var test = [];
+      /*timeline.push(fullscreen);*/
+      timeline.push(welcome,instruction,fixation);
+
+      for(var i=1; i<3; i++){
+          var buttontype='<button type="button" class="button'+i+'">push</button>';
+          test[i] = {
+          type: 'html-button-response',
+          stimulus: '<p style="color: red; font-size: 48px; font-weight: bold;">GREEN</p>',
+          button_html:buttontype,
+          choices: ['Green']
+          /*prompt: "<p>What color is this word?</p>"*/
+        };
+      timeline.push(test[i]);
+      };
+
 
       /* 課題開始 */
       jsPsych.init({
