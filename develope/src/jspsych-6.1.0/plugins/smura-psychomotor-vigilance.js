@@ -65,7 +65,7 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
       button: null
     };
 
-    var html = '<div id="jspsych-html-button-response-stimulus">'+trial.stimulus+'</div>';
+    var html = '<div id="smura-psychomotor-vigilance-buttons-stimulus">'+trial.stimulus+'</div>';
     var buttons = [];
     if (Array.isArray(trial.button_html)) {
       if (trial.button_html.length == trial.choices.length) {
@@ -78,10 +78,10 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
         buttons.push(trial.button_html);
       }
     }
-    html += '<div id="jspsych-html-button-response-btngroup">';
+    html += '<div id="smura-psychomotor-vigilance-buttons-btngroup">';
     for (var i = 0; i < trial.choices.length; i++) {
       var str = buttons[i].replace(/%choice%/g, trial.choices[i]);
-      html += '<div class="jspsych-html-button-response-button" style="display: inline-block; margin:'+trial.margin_vertical+' '+trial.margin_horizontal+'" id="jspsych-html-button-response-button-' + i +'" data-choice="'+i+'">'+str+'</div>';
+      html += '<div class="smura-psychomotor-vigilance-buttons-button" style="display: inline-block; margin:'+trial.margin_vertical+' '+trial.margin_horizontal+'" id="smura-psychomotor-vigilance-buttons-button-' + i +'" data-choice="'+i+'">'+str+'</div>';
     }
     html += '</div>';
     html += trial.prompt;
@@ -101,14 +101,14 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
         if (rtime >= trial.max_countup){
           after_response("Null", trial.max_countup);
         }
-        // add event listeners to buttons
-        for (var i = 0; i < trial.choices.length; i++) {
-          display_element.querySelector('#jspsych-html-button-response-button-' + i).addEventListener('click', function(e){
-            var choice = e.currentTarget.getAttribute('data-choice'); // don't use dataset for jsdom compatibility
-            after_response(choice, rtime);
-          });
-        }
       },5);
+      // add event listeners to buttons
+      for (var i = 0; i < trial.choices.length; i++) {
+        display_element.querySelector('#smura-psychomotor-vigilance-buttons-button-' + i).addEventListener('click', function(e){
+          var choice = e.currentTarget.getAttribute('data-choice'); // don't use dataset for jsdom compatibility
+          after_response(choice, rtime);
+        });
+      }
     }, 25)
 
     function after_response(choice, rt) {
@@ -120,13 +120,13 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
       response.rt = rt;
 
       // display rt
-      display_element.innerHTML = '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + 'width="300px"/></div>';
+      display_element.innerHTML = '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + '" width="300px"/></div>';
       display_element.innerHTML = '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rt + '</p></font></div>';
 
       console.log("[smura-psychomotor-vigilance] response time: " + rt);
 
       // disable all the buttons after a response
-      var btns = document.querySelectorAll('.jspsych-html-button-response-button button');
+      var btns = document.querySelectorAll('.smura-psychomotor-vigilance-buttons-button button');
       for(var i=0; i<btns.length; i++){
         //btns[i].removeEventListener('click');
         btns[i].setAttribute('disabled', 'disabled');
