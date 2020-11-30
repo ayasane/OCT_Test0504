@@ -4,6 +4,7 @@
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
+    	<script src="src/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
     <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
 </head>
 
@@ -22,10 +23,30 @@
         stimulus: "こんにちは！"
       };
 
+      /*教示*/
+      var inst = {
+          type: "html-button-response",
+      		stimulus:"<p>実験にご協力いただきありがとうございます。まず画面いっぱいにこのウィンドウを広げてください。</p>"+
+      		"<p>今から下のような複雑な絵が順番に提示されます。</p>"+
+      		'<img src=image/instruction.jpg></img>'+
+      		"<p>絵は0.5秒で消えます。よく見て覚えてください。</p>"+
+      		"<p>続けて提示されていく絵が、「２つ前」の絵と同じだったらボタンを押してください。</p>"+
+      		"<p>２つ前の絵と同じでなければ何も押さないでください。絵が消えてから2.5秒後に次の絵が出ます。</p>"+
+      		"<p>絵は全部で60枚出ます。15枚ごとに休憩が入ります。好きなタイミングでボタンを押して次に進んでください。</p>"+
+      		"<p>ボタンを押さなくても絵は切り替わっていきますので、「2つ前」の絵と同じと判断したらなるべく早くボタンを押してください。</p>"+
+      		"<p>画像を見る際に不快に感じたり，気分が悪くなった場合は，途中で回答を中断しても構いません。</p>"+
+      		"<p>実験で得られたデータは研究者のみが確認、保管します。研究終了後に適切な方法で削除します。</p>"+
+      		"<p>実験中は画像がきちんと見える位置から画面を見るようにしてください。</p>"+
+      		"<p>実験に参加していただける場合は次のボタンを押して実験を始めてください。最初に＋が提示されてから実験が始まります。</p>",
+      	choices: ['実験参加に同意して始める'],
+      };
+
+
       /* タイムラインの設定 */
       var timeline = [];
-      timeline.push(fullscreen);
-      timeline.push(welcome);
+/*      timeline.push(fullscreen);
+      timeline.push(welcome);*/
+      timeline.push(inst);
 
       /* 課題開始 */
       jsPsych.init({
@@ -34,7 +55,7 @@
           jsPsych.data.displayData();
         }
       });
-      
+
     </script>
 </body>
 </html>
