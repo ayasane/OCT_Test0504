@@ -87,12 +87,10 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
     html += trial.prompt;
     // main thread
     // interval
-    var interval_start = performance.now();
-    var interval_duration = display_time();
-    //html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + '" width="300px"/></div>';
-    //while(performance.now() - interval_start < interval_duration){
-    //  display_element.innerHTML = html;
-    //}
+    html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + '" width="300px"/></div>';
+    setTimeout(function() {
+      display_element.innerHTML = html;
+    }, display_time());
     // count up
     var start_time = performance.now();
     setInterval(function() {
@@ -101,6 +99,7 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
       html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rtime + '</p></font></div>';
       display_element.innerHTML = html;
       if (rtime >= trial.max_countup){
+        start_time = performance.now();
         after_response(null, trial.max_countup);
       } else {
         // add event listeners to buttons
@@ -109,6 +108,7 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
           if (selector != null){
             selector.addEventListener('click', function(e){
               var choice = e.currentTarget.getAttribute('data-choice'); // don't use dataset for jsdom compatibility
+              start_time = performance.now();
               after_response(choice, rtime);
             });
           }
@@ -121,13 +121,12 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
       response.rt = rt;
 
       // display rt
-      html = '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + '" width="300px"/></div>';
-      html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rt + '</p></font></div>';
+      var html_ar = '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + '" width="300px"/></div>';
+      html_ar += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rt + '</p></font></div>';
 
-      var start_time = performance.now();
-      while (performance.now() - start_time < 500){
-        display_element.innerHTML = html;
-      }
+      setTimeout(function(){
+        display_element.innerHTML = html_ar;
+      }, 3000); // default : 500ms
       console.log("[smura-psychomotor-vigilance] response time: " + rt);
 
       // disable all the buttons after a response
