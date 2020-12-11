@@ -19,13 +19,31 @@
         fullscreen_mode: true
       };
 
-      var thread = {
+      var display_time = function () {
+          var rand = Math.round(Math.random() * 1000) + 2000;
+          console.log("[smura-pvt-interval] interval duration: " + rand);
+          return rand;
+      };
+
+      var interval = {
+        type: "html-keyboard-response",
+        stimulus: '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div>',
+        choices: jsPsych.NO_KEYS,
+        trial_duration: display_time
+      }
+
+      var countup = {
         type: "psychomotor-vigilance",
         image: "img/task10_PVT/rectangle.png",
         max_countup: 1000,
         repeat: 1,
         choices: ["space"],
         prompt: "スペースキーを押してカウントアップを止めてください。",
+      }
+
+      var thread = {
+        timeline: [interval, countup],
+        repetitions: 5
       }
 
       /* タイムラインの設定 */
@@ -36,9 +54,9 @@
       /* 課題開始 */
       jsPsych.init({
         timeline: timeline,
-        on_finish: function() {
-          jsPsych.data.displayData();
-        }
+        //on_finish: function() {
+        //  jsPsych.data.displayData();
+        //}
       });
       
     </script>

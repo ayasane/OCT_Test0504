@@ -26,7 +26,7 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
         default: 1
       },
       choices: {
-        type: jsPsych.plugins.parameterType.KEYCODE,
+        type: jsPsych.plugins.parameterType.STRING,
         pretty_name: "Choices",
         default: jsPsych.ALL_KEYS,
         array: true,
@@ -50,14 +50,7 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
 
   plugin.trial = function(display_element, trial) {
 
-    var countN = 0;
-
     console.log("[DEBUG] load img : " + trial.image);
-    function display_time() {
-        var rand = Math.round(Math.random() * 1000) + 2000;
-        console.log("[smura-psychomotor-vigilance] interval duration: " + rand);
-        return rand;
-    };
 
     // store response
     var response = {
@@ -84,39 +77,44 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
       html += '<div class="smura-psychomotor-vigilance-buttons-button" style="display: inline-block; margin:'+trial.margin_vertical+' '+trial.margin_horizontal+'" id="smura-psychomotor-vigilance-buttons-button-' + i +'" data-choice="'+i+'">'+str+'</div>';
     }
     html += '</div>';
-    html += trial.prompt;
+    if (trial.prompt != null){
+      html += trial.prompt;
+    }
+
     // main thread
-    // interval
-    html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + '" width="300px"/></div>';
-    setTimeout(function() {
-      display_element.innerHTML = html;
-    }, display_time());
-    // count up
-    var start_time = performance.now();
-    setInterval(function() {
-      var rtime = Math.floor(performance.now() - start_time);
+    var rtime;
+    var choice = null;
+    var start_time = performance.now()
+    var main_thread = setInterval(function() {
+      rtime = Math.floor(performance.now() - start_time);
       html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + '" width="300px"/></div>';
       html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rtime + '</p></font></div>';
       display_element.innerHTML = html;
+
       if (rtime >= trial.max_countup){
-        start_time = performance.now();
-        after_response(null, trial.max_countup);
-      } else {
-        // add event listeners to buttons
-        for (var i = 0; i < trial.choices.length; i++) {
-          let selector = display_element.querySelector('#smura-psychomotor-vigilance-buttons-button-' + i);
-          if (selector != null){
-            selector.addEventListener('click', function(e){
-              var choice = e.currentTarget.getAttribute('data-choice'); // don't use dataset for jsdom compatibility
-              start_time = performance.now();
-              after_response(choice, rtime);
-            });
-          }
-        }
+        after_response(choice, rtime);
+        clearInterval(main_thread);
       }
-    },5);
+    },10);
+
+    // add event listeners to buttons
+    for (var i = 0; i < trial.choices.length; i++){
+      let selector = display_element.querySelector('#smura-psychomotor-vigilance-buttons-button-' + i);
+      console.log("selector : " + selector);
+      console.log("[DEBUG] exec event listener!!");
+      if (selector != null){
+        selector.addEventListener('click', function(e){
+          choice = e.currentTarget.getAttribute('data-choice'); // don't use dataset for jsdom compatibility
+        });
+      }
+    }
+
+    after_response(choice, rtime);
 
     function after_response(choice, rt) {
+      if (rt >= trial.max_countup){
+        rt = trial.max_countup;
+      }
       response.button = choice;
       response.rt = rt;
 
@@ -132,10 +130,13 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
       // disable all the buttons after a response
       var btns = document.querySelectorAll('.smura-psychomotor-vigilance-buttons-button button');
       for(var i=0; i<btns.length; i++){
-        btns[i].removeEventListener('click');
         btns[i].setAttribute('disabled', 'disabled');
       }
 
+      finish_trial();
+    }; // after_response
+
+    function finish_trial(){
       // store data
       var trial_data = {
         parameter_name: 'parameter value',
@@ -146,8 +147,7 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
       display_element.innerHTML = '';
       // end trial
       jsPsych.finishTrial(trial_data);
-
-    };
+    }
 
     var response_listener = jsPsych.pluginAPI.getKeyboardResponse({
       callback_function: after_response,
@@ -156,8 +156,6 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
       persist: true,
       allow_held_key: false
     });
-
   };
-
   return plugin;
 })();
