@@ -50,3 +50,6 @@ Spencer, R. J., Wendell, C. R., Giggey, P. P., Seliger, S. L., Katzel, L. I., & 
 
 
 WebCNPを１２試行にしたものを作成する。
+
+あ，これで作れそう。
+https://jspsychophysics.hes.kyushu-u.ac.jp/demo_explanation.html
