@@ -37,3 +37,16 @@ Calamia, M., Markon, K., Denburg, N. L., & Tranel, D. (2011). Developing a short
 Moore, T. M., Scott, J. C., Reise, S. P., Port, A. M., Jackson, C. T., Ruparel, K., Savitt, A. P., Gur, R. E., & Gur, R. C. (2015). Development of an abbreviated form of the Penn Line Orientation Test using large samples and computerized adaptive test simulation. Psychological Assessment, 27(3), 955–964.
 
 Spencer, R. J., Wendell, C. R., Giggey, P. P., Seliger, S. L., Katzel, L. I., & Waldstein, S. R. (2013). Judgment of Line Orientation: an examination of eight short forms. Journal of Clinical and Experimental Neuropsychology, 35(2), 160–166.
+
+
+# Penn Web-Based Computerized Neurocognitive Battery (WebCNP) Test Descriptions and Scoring Variables（P48）
+この資料が参考になった。
+
+- 赤と青の角度の異なる線分が２つでてくる。青色の線を回転させて，赤色の線と平行になるようにする。
+- 青色の線分は，１クリックにつき６度回転する（時計回りと反時計周りの２つのボタンがある）。
+- 青と赤の位置は，左右で高さが等しい（水平に並ぶ），対角上にある。ただし，２つの線の中心の距離はいつもおなじだった（上半分水平６試行，下半分水平６試行，左上と右下の対角６試行，左下と右上の対角６試行）。
+- 青い線は，極小，小，中，大の４つある(各６試行)。赤はいつも大
+- この課題では２４試行実施している。
+
+
+WebCNPを１２試行にしたものを作成する。
