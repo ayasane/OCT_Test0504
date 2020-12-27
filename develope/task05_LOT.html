@@ -31,10 +31,10 @@
       /* 青線 */
       var line_blue = {
         obj_type: 'line',
-        startX: 200, // location in the canvas
+        startX: 800, // location in the canvas
         startY: 400,
         angle: 45,
-        line_length: 200,
+        line_length: 50,
         line_color: 'blue',
       }
 
@@ -44,7 +44,7 @@
         startX: 200, // location in the canvas
         startY: 400,
         angle: 90,
-        line_length: 200,
+        line_length: 100,
         line_color: 'red',
       }
 
@@ -52,7 +52,7 @@
       var text_rotate = {
        obj_type: 'text',
        startX: 120,
-       startY: 750,
+       startY: 680,
        content: '青い線を回転させるために\nボタンを押してください',
        font: "16px 'Arial'",
        text_color: 'white',
@@ -62,7 +62,7 @@
       var text_finish = {
        obj_type: 'text',
        startX: 880,
-       startY: 750,
+       startY: 680,
        content: '２つの線の方向が同じになったら\n「終了」を押してください',
        font: "16px 'Arial'",
        text_color: 'white',
@@ -72,7 +72,7 @@
       var img_finish = {
        obj_type: 'image',
        startX: 500,
-       startY: 700,
+       startY: 740,
        file: 'img/task05_LOT/img_fin.png',
        scale: 0.6,
       }
@@ -82,7 +82,7 @@
       var img_right = {
         obj_type: 'image',
         startX: 650,
-        startY: 700,
+        startY: 680,
         file: 'img/task05_LOT/img_right.png',
         scale: 0.6,
       }
@@ -91,20 +91,17 @@
       var img_left = {
         obj_type: 'image',
         startX: 350,
-        startY: 700,
+        startY: 680,
         file: 'img/task05_LOT/img_left.png',
         scale: 0.6,
       }
 
       var trial = {
         type: 'psychophysics',
-        stimuli: [line_blue,
-          line_red,
-          text_rotate,
-          text_finish,
-          img_finish,
-          img_right,
-          img_left],
+        stimuli: [line_blue,line_red,text_rotate,text_finish,
+          img_finish,img_right,img_left],
+        choices: ['right','left'],
+        response_type: 'mouse',
         canvas_width: 1000,
         canvas_height: 800,
         background_color: "black",

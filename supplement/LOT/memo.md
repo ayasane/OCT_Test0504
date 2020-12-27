@@ -53,3 +53,9 @@ WebCNPを１２試行にしたものを作成する。
 
 あ，これで作れそう。
 https://jspsychophysics.hes.kyushu-u.ac.jp/demo_explanation.html
+
+雑作業工程
+- 画面を作る
+- 青い線を回転させる
+- １２回繰り返しをする
+- 開始の角度をランダムに決定する（完全にランダム化？疑似ランダム？そもそも固定？）
