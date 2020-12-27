@@ -4,11 +4,11 @@
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
-    <script src="src/jspsych-psychophysics-2.0/plugins/jspsych-psychophysics.js"></script>
+    <script src="src/jspsych-psychophysics-2.0/jspsych-psychophysics.js"></script>
     <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
 </head>
 
-<body>
+<body bgcolor="#000", text="#FFF">
     <script type="text/javascript">
 
       /* 課題に関するコードを以下に書く */
@@ -25,8 +25,92 @@
 
       /* タイムラインの設定 */
       var timeline = [];
-      timeline.push(fullscreen);
+      /* timeline.push(fullscreen); */
       timeline.push(welcome);
+
+      /* 青線 */
+      var line_blue = {
+        obj_type: 'line',
+        startX: 200, // location in the canvas
+        startY: 400,
+        angle: 45,
+        line_length: 200,
+        line_color: 'blue',
+      }
+
+      /* 赤線 */
+      var line_red = {
+        obj_type: 'line',
+        startX: 200, // location in the canvas
+        startY: 400,
+        angle: 90,
+        line_length: 200,
+        line_color: 'red',
+      }
+
+      /* 回転の教示 */
+      var text_rotate = {
+       obj_type: 'text',
+       startX: 120,
+       startY: 750,
+       content: '青い線を回転させるために\nボタンを押してください',
+       font: "16px 'Arial'",
+       text_color: 'white',
+      }
+
+      /* 終了の教示 */
+      var text_finish = {
+       obj_type: 'text',
+       startX: 880,
+       startY: 750,
+       content: '２つの線の方向が同じになったら\n「終了」を押してください',
+       font: "16px 'Arial'",
+       text_color: 'white',
+      }
+
+      /* 終了のボタン */
+      var img_finish = {
+       obj_type: 'image',
+       startX: 500,
+       startY: 700,
+       file: 'img/task05_LOT/img_fin.png',
+       scale: 0.6,
+      }
+
+
+      /* 右回りのボタン */
+      var img_right = {
+        obj_type: 'image',
+        startX: 650,
+        startY: 700,
+        file: 'img/task05_LOT/img_right.png',
+        scale: 0.6,
+      }
+
+      /* 左回りのボタン */
+      var img_left = {
+        obj_type: 'image',
+        startX: 350,
+        startY: 700,
+        file: 'img/task05_LOT/img_left.png',
+        scale: 0.6,
+      }
+
+      var trial = {
+        type: 'psychophysics',
+        stimuli: [line_blue,
+          line_red,
+          text_rotate,
+          text_finish,
+          img_finish,
+          img_right,
+          img_left],
+        canvas_width: 1000,
+        canvas_height: 800,
+        background_color: "black",
+      }
+      timeline.push(trial);
+
 
       /* 課題開始 */
       jsPsych.init({
