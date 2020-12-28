@@ -35,6 +35,7 @@
         startY: 400,
         angle: 45,
         line_length: 50,
+        line_width: 3,
         line_color: 'blue',
       }
 
@@ -45,6 +46,7 @@
         startY: 400,
         angle: 90,
         line_length: 100,
+        line_width: 3,
         line_color: 'red',
       }
 
@@ -68,40 +70,13 @@
        text_color: 'white',
       }
 
-      /* 終了のボタン */
-      var img_finish = {
-       obj_type: 'image',
-       startX: 500,
-       startY: 740,
-       file: 'img/task05_LOT/img_fin.png',
-       scale: 0.6,
-      }
-
-
-      /* 右回りのボタン */
-      var img_right = {
-        obj_type: 'image',
-        startX: 650,
-        startY: 680,
-        file: 'img/task05_LOT/img_right.png',
-        scale: 0.6,
-      }
-
-      /* 左回りのボタン */
-      var img_left = {
-        obj_type: 'image',
-        startX: 350,
-        startY: 680,
-        file: 'img/task05_LOT/img_left.png',
-        scale: 0.6,
-      }
-
       var trial = {
         type: 'psychophysics',
-        stimuli: [line_blue,line_red,text_rotate,text_finish,
-          img_finish,img_right,img_left],
-        choices: ['right','left'],
-        response_type: 'mouse',
+        stimuli: [line_blue,line_red,text_rotate,text_finish],
+        choices: ['<img src="img/task05_LOT/img_right.png"/>',
+        '<img src="img/task05_LOT/img_left.png" width="400px"/>',
+        '<img src="img/task05_LOT/img_fin.png" width="400px"/>'],
+        button_html: '<button class="jspsych-btn">%choice%</button>',
         canvas_width: 1000,
         canvas_height: 800,
         background_color: "black",
