@@ -44,7 +44,7 @@
         obj_type: 'line',
         startX: 200, // location in the canvas
         startY: 400,
-        angle: 90,
+        angle: -90,
         line_length: 100,
         line_width: 3,
         line_color: 'red',
@@ -83,7 +83,23 @@
         canvas_height: 800,
         background_color: "black",
       }
-      timeline.push(trial);
+
+      var rotate_node = {
+        timeline: [trial],
+        loop_function: function(data){
+          var last_select = jsPsych.data.get().last(1).values()[0].button_pressed;
+          if(last_select == "0"){
+            line_blue.angle = line_blue.angle + 6;
+            return true;
+          } else if(last_select == "1"){
+            line_blue.angle = line_blue.angle - 6;
+            return true;
+          } else {
+            return false;
+          }
+        }
+      }
+      timeline.push(rotate_node);
 
 
       /* 課題開始 */
