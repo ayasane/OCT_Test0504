@@ -60,3 +60,10 @@ https://jspsychophysics.hes.kyushu-u.ac.jp/demo_explanation.html
 - timelineVariableで繰り返しをする
 - 開始の角度をランダムに決定する（完全にランダム化？疑似ランダム？そもそも固定？）角度のは６の倍数
 - 教示
+
+
+
+
+line_blue.angle = stimli_list[i].line_blue_angle;
+line_blue.line_length = stimli_list[i].line_blue_length;
+line_red.angle = stimli_list[i].line_red_angle;

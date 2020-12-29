@@ -28,23 +28,43 @@
       /* timeline.push(fullscreen); */
       timeline.push(welcome);
 
-      /* 青線 */
+      /* 青線
       var line_blue = {
         obj_type: 'line',
         startX: 800, // location in the canvas
         startY: 400,
-        angle: 100,
+        angle:  jsPsych.timelineVariable('line_blue_angle'),
+        line_length: jsPsych.timelineVariable('line_blue_length'),
+        line_width: 3,
+        line_color: 'blue',
+      }*/
+
+      var line_blue = {
+        obj_type: 'line',
+        startX: 800, // location in the canvas
+        startY: 400,
+        angle:  90,
         line_length: 100,
         line_width: 3,
         line_color: 'blue',
       }
 
-      /* 赤線 */
+      /* 赤線
       var line_red = {
         obj_type: 'line',
         startX: 200, // location in the canvas
         startY: 400,
-        angle: 100,
+        angle:  jsPsych.timelineVariable('line_red_angle'),
+        line_length: 100,
+        line_width: 3,
+        line_color: 'red',
+      }*/
+
+      var line_red = {
+        obj_type: 'line',
+        startX: 200, // location in the canvas
+        startY: 400,
+        angle:  0,
         line_length: 100,
         line_width: 3,
         line_color: 'red',
@@ -90,10 +110,6 @@
         {line_red_angle: 12, line_blue_angle:168, line_blue_length:25},
       ];
 
-      for (var i = 0; i<3; i++) {
-        line_blue.angle = stimli_list[i].line_blue_angle;
-        line_blue.line_length = stimli_list[i].line_blue_length;
-        line_red.angle = stimli_list[i].line_red_angle;
         var rotate_node = {
           timeline: [trial],
           loop_function: function(data){
@@ -110,9 +126,6 @@
           },
         };
         timeline.push(rotate_node);
-      }
-
-
 
       /* 課題開始 */
       jsPsych.init({
