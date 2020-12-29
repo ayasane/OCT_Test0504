@@ -110,6 +110,7 @@
         {line_red_angle: 12, line_blue_angle:168, line_blue_length:25},
       ];
 
+      for (var i = 0; i<3; i++) {
         var rotate_node = {
           timeline: [trial],
           loop_function: function(data){
@@ -126,6 +127,7 @@
           },
         };
         timeline.push(rotate_node);
+      }
 
       /* 課題開始 */
       jsPsych.init({
