@@ -89,12 +89,22 @@
       var line_red_angle = [60, 165, 150, 135, 120,  90,   0,  30,  15,  45, 105,  75];
       var line_blue_angle = [45, 60, 15,  165, 105, 135, 120,  90,  75,  30,  150,   0];
       var line_blue_length = [50, 100,  25,  50,  25,  50, 100, 100,  50,  25, 100,  25];
+      var line_blue_x = [800,800,800,800,800,800,800,800,800,800,800,800];
+      var line_blue_y = [200, 500, 100, 450,200, 500, 100, 450,200, 500, 100, 450];
+      var line_red_x = [200,200,200,200,200,200,200,200,200,200,200,200];
+      var line_red_y = [200, 500, 100, 450,200, 500, 100, 450,200, 500, 100, 450];
 
       var trial_n = 12;
       var trial_i = 0;
+      var blue_angle = 0;
+      /* trial 1*/
       line_blue.angle = line_blue_angle[0];
       line_blue.line_length = line_blue_length[0];
+      line_blue.startX = line_blue_x[0];
+      line_blue.startY = line_blue_y[0];
       line_red.angle = line_red_angle[0];
+      line_red.startX = line_red_x[0];
+      line_red.startY = line_red_y[0];
 
       for(var i = 0; i < trial_n; i++) {
         var rotate_node = {
@@ -110,14 +120,22 @@
             } else {
               if(trial_i < trial_n){
                 trial_i = trial_i +1;
+                blue_angle = line_blue.angle;
                 line_blue.angle = line_blue_angle[trial_i];
                 line_blue.line_length = line_blue_length[trial_i];
+                line_blue.startX = line_blue_x[trial_i];
+                line_blue.startY = line_blue_y[trial_i];
                 line_red.angle = line_red_angle[trial_i];
+                line_red.startX = line_red_x[trial_i];
+                line_red.startY = line_red_y[trial_i];
                 return false;
               }
+                blue_angle = line_blue.angle;
+                respose_blue_angle = line_blue.angle;
                 return false;
             }
           },
+          data: {response_blue_angle: blue_angle},
         };
         timeline.push(rotate_node);
       }

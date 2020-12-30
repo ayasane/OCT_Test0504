@@ -55,16 +55,14 @@ WebCNPを１２試行にしたものを作成する。
 https://jspsychophysics.hes.kyushu-u.ac.jp/demo_explanation.html
 
 雑作業工程
+＜完了＞
 - 画面を作る<完了>
 - 青い線を回転させる<完了>
 - timelineVariableで繰り返しをする <もっと泥臭い感じになったけど，動くことには動くようになった＞
 - 開始の角度をランダムに決定する（完全にランダム化？疑似ランダム？そもそも固定？）角度のは６の倍数 <暫定的な刺激は作れた>
-- 教示
+- 呈示座標をきめる <制御はできるようになった>
+
+＜未着手＞
+- 角度や長さの情報を保存する（dataで保存できるとおもいきやできない）
 - 角度の情報と反応時間を計測する
-
-
-
-
-line_blue.angle = stimli_list[i].line_blue_angle;
-line_blue.line_length = stimli_list[i].line_blue_length;
-line_red.angle = stimli_list[i].line_red_angle;
+- 教示
