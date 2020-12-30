@@ -1,6 +1,6 @@
 /*
  * Psychomotor Vigilance Task (PVT)
- * author : Seiji Muranaka
+ * author : Seiji Muranaka (Osaka University)
  * date   : 2020/11/20
  */
 
@@ -20,10 +20,6 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
       max_countup: {
         type: jsPsych.plugins.parameterType.INT,
         default: 1000
-      },
-      repeat: {
-        type: jsPsych.plugins.parameterType.INT, // number of repeat thread
-        default: 1
       },
       choices: {
         type: jsPsych.plugins.parameterType.STRING,
@@ -50,15 +46,29 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
 
   plugin.trial = function(display_element, trial) {
 
+    // check input
     console.log("[DEBUG] load img : " + trial.image);
+    console.log("[DEBUG] choice: " + trial.choices);
 
-    // store response
-    var response = {
-      rt: null,
-      button: null
-    };
+    // display stimulus
+    var html = '<div id="smura-psychomotor-vigilance-buttons-stimulus">'; //+trial.stimulus+'</div>';
+    // main thread (count up)
+    var rtime;
+    var choice = null;
+    var start_time = performance.now()
+    var main_thread = setInterval(function() {
+      rtime = Math.floor(performance.now() - start_time);
+      html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + '" width="300px"/></div>';
+      html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rtime + '</p></font></div>';
+      display_element.innerHTML = html;
 
-    var html = '<div id="smura-psychomotor-vigilance-buttons-stimulus">'+trial.stimulus+'</div>';
+      if (rtime >= trial.max_countup){
+        console.log("[DEBUG] MAX COUNT!");
+        clearInterval(main_thread);
+      }
+    },10);
+
+    // display buttons
     var buttons = [];
     if (Array.isArray(trial.button_html)) {
       if (trial.button_html.length == trial.choices.length) {
@@ -77,39 +87,28 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
       html += '<div class="smura-psychomotor-vigilance-buttons-button" style="display: inline-block; margin:'+trial.margin_vertical+' '+trial.margin_horizontal+'" id="smura-psychomotor-vigilance-buttons-button-' + i +'" data-choice="'+i+'">'+str+'</div>';
     }
     html += '</div>';
+
+    // show prompt if there is one
     if (trial.prompt != null){
       html += trial.prompt;
     }
-
-    // main thread
-    var rtime;
-    var choice = null;
-    var start_time = performance.now()
-    var main_thread = setInterval(function() {
-      rtime = Math.floor(performance.now() - start_time);
-      html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + '" width="300px"/></div>';
-      html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rtime + '</p></font></div>';
-      display_element.innerHTML = html;
-
-      if (rtime >= trial.max_countup){
-        after_response(choice, rtime);
-        clearInterval(main_thread);
-      }
-    },10);
+    display_element.innerHTML = html;
 
     // add event listeners to buttons
     for (var i = 0; i < trial.choices.length; i++){
-      let selector = display_element.querySelector('#smura-psychomotor-vigilance-buttons-button-' + i);
-      console.log("selector : " + selector);
-      console.log("[DEBUG] exec event listener!!");
-      if (selector != null){
-        selector.addEventListener('click', function(e){
-          choice = e.currentTarget.getAttribute('data-choice'); // don't use dataset for jsdom compatibility
-        });
-      }
+      display_element.querySelector('#smura-psychomotor-vigilance-buttons-button-' + i).addEventListener('click', function(e){
+        var choice = e.currentTarget.getAttribute('data-choice');
+        console.log("[smura-psychomotor-vigilance] KEY : " + choice);
+        clearInterval(main_thread);
+        after_response(choice, rtime);
+      });
     }
 
-    after_response(choice, rtime);
+    // store response
+    var response = {
+      rt: null,
+      button: null
+    };
 
     function after_response(choice, rt) {
       if (rt >= trial.max_countup){
@@ -117,14 +116,7 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
       }
       response.button = choice;
       response.rt = rt;
-
-      // display rt
-      var html_ar = '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + '" width="300px"/></div>';
-      html_ar += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rt + '</p></font></div>';
-
-      setTimeout(function(){
-        display_element.innerHTML = html_ar;
-      }, 3000); // default : 500ms
+      console.log("[smura-psychomotor-vigilance] response: " + choice);
       console.log("[smura-psychomotor-vigilance] response time: " + rt);
 
       // disable all the buttons after a response
@@ -137,6 +129,13 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
     }; // after_response
 
     function finish_trial(){
+      // kill any remaining setTimeout handlers
+      jsPsych.pluginAPI.clearAllTimeouts();
+      // kill keyboard listeners
+      if (typeof response_listener !== 'undefined') {
+        jsPsych.pluginAPI.cancelKeyboardResponse(response_listener);
+      }
+      
       // store data
       var trial_data = {
         parameter_name: 'parameter value',
@@ -156,6 +155,13 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
       persist: true,
       allow_held_key: false
     });
+
+    // end trial if trial_duration is set
+    if (trial.trial_duration !== null) {
+      jsPsych.pluginAPI.setTimeout(function() {
+        finish_trial();
+      }, trial.trial_duration);
+    }
   };
   return plugin;
 })();

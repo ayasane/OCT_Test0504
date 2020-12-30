@@ -21,7 +21,7 @@
 
       var display_time = function () {
           var rand = Math.round(Math.random() * 1000) + 2000;
-          console.log("[smura-pvt-interval] interval duration: " + rand);
+          console.log("[MAIN] interval duration: " + rand);
           return rand;
       };
 
@@ -32,6 +32,7 @@
         trial_duration: display_time
       }
 
+      var rtime = 0;
       var countup = {
         type: "psychomotor-vigilance",
         image: "img/task10_PVT/rectangle.png",
@@ -39,10 +40,21 @@
         repeat: 1,
         choices: ["space"],
         prompt: "スペースキーを押してカウントアップを止めてください。",
+        on_finish: function(data) {
+          rtime = data.response_time;
+        }
+      }
+
+      var feedback = {
+        type: "html-keyboard-response",
+        stimulus: ['<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div>',
+                   '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rtime + '</p></font></div>'],
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 500
       }
 
       var thread = {
-        timeline: [interval, countup],
+        timeline: [interval, countup, feedback],
         repetitions: 5
       }
 
@@ -54,9 +66,9 @@
       /* 課題開始 */
       jsPsych.init({
         timeline: timeline,
-        //on_finish: function() {
-        //  jsPsych.data.displayData();
-        //}
+        on_finish: function() {
+          jsPsych.data.displayData();
+        }
       });
       
     </script>
