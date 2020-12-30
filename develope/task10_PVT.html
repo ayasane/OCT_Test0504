@@ -38,8 +38,8 @@
         image: "img/task10_PVT/rectangle.png",
         max_countup: 1000,
         repeat: 1,
-        choices: ["space"],
-        prompt: "スペースキーを押してカウントアップを止めてください。",
+        choices: ["stop"],
+        prompt: "stopボタンを押してカウントアップを止めてください。",
         on_finish: function(data) {
           rtime = data.response_time;
         }

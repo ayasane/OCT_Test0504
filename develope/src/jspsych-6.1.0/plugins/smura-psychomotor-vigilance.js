@@ -48,25 +48,32 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
 
     // check input
     console.log("[DEBUG] load img : " + trial.image);
-    console.log("[DEBUG] choice: " + trial.choices);
 
     // display stimulus
-    var html = '<div id="smura-psychomotor-vigilance-buttons-stimulus">'; //+trial.stimulus+'</div>';
-    // main thread (count up)
     var rtime;
-    var choice = null;
+    //var choice = null;
     var start_time = performance.now()
     var main_thread = setInterval(function() {
+      // countup (calculate response time)
       rtime = Math.floor(performance.now() - start_time);
-      html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + '" width="300px"/></div>';
-      html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rtime + '</p></font></div>';
-      display_element.innerHTML = html;
 
+      // display response time
+      var _html;
+      _html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="' + trial.image + '" width="300px"/></div>';
+      _html += '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rtime + '</p></font></div>';
+
+      // stop condition
       if (rtime >= trial.max_countup){
         console.log("[DEBUG] MAX COUNT!");
         clearInterval(main_thread);
+        after_response(rtime);
       }
+
+      return _html;
     },10);
+
+    var html = '<div id="smura-psychomotor-vigilance-buttons-stimulus">'+main_thread+'</div>';
+    display_element.innerHTML = html;
 
     // display buttons
     var buttons = [];
@@ -100,24 +107,28 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
         var choice = e.currentTarget.getAttribute('data-choice');
         console.log("[smura-psychomotor-vigilance] KEY : " + choice);
         clearInterval(main_thread);
-        after_response(choice, rtime);
+        after_response(rtime);
       });
     }
 
     // store response
     var response = {
       rt: null,
-      button: null
     };
 
-    function after_response(choice, rt) {
+    function after_response(rt) {
+      // set max response time if missed response
       if (rt >= trial.max_countup){
         rt = trial.max_countup;
       }
-      response.button = choice;
+
+      // record data
       response.rt = rt;
-      console.log("[smura-psychomotor-vigilance] response: " + choice);
       console.log("[smura-psychomotor-vigilance] response time: " + rt);
+
+      // after a valid response, the stimulus will have the CSS class 'responded'
+      // which can be used to provide visual feedback that a response was recorded
+      display_element.querySelector('#smura-psychomotor-vigilance-buttons-stimulus').className += ' responded';
 
       // disable all the buttons after a response
       var btns = document.querySelectorAll('.smura-psychomotor-vigilance-buttons-button button');
@@ -131,10 +142,6 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
     function finish_trial(){
       // kill any remaining setTimeout handlers
       jsPsych.pluginAPI.clearAllTimeouts();
-      // kill keyboard listeners
-      if (typeof response_listener !== 'undefined') {
-        jsPsych.pluginAPI.cancelKeyboardResponse(response_listener);
-      }
       
       // store data
       var trial_data = {
@@ -143,25 +150,11 @@ jsPsych.plugins["psychomotor-vigilance"] = (function() {
         response_button: response.button
       };
   
+      // clear the display
       display_element.innerHTML = '';
       // end trial
       jsPsych.finishTrial(trial_data);
     }
-
-    var response_listener = jsPsych.pluginAPI.getKeyboardResponse({
-      callback_function: after_response,
-      valid_responses: trial.choices,
-      rt_method: 'performance',
-      persist: true,
-      allow_held_key: false
-    });
-
-    // end trial if trial_duration is set
-    if (trial.trial_duration !== null) {
-      jsPsych.pluginAPI.setTimeout(function() {
-        finish_trial();
-      }, trial.trial_duration);
-    }
-  };
+  }; // finish_trial
   return plugin;
 })();
