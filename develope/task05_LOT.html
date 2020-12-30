@@ -82,20 +82,21 @@
           background_color: "black",
       }
 
-      var stimli_list = [
-        {line_red_angle: 60, line_blue_angle:84, line_blue_length:100},
-        {line_red_angle: 150, line_blue_angle:18, line_blue_length:50},
-        {line_red_angle: 12, line_blue_angle:168, line_blue_length:25},
-      ];
+      /* In R
+      sample(c(0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165))
+      sample(c(100, 50, 25, 100, 50, 25, 100, 50, 25, 100, 50, 25))
+      */
+      var line_red_angle = [60, 165, 150, 135, 120,  90,   0,  30,  15,  45, 105,  75];
+      var line_blue_angle = [45, 60, 15,  165, 105, 135, 120,  90,  75,  30,  150,   0];
+      var line_blue_length = [50, 100,  25,  50,  25,  50, 100, 100,  50,  25, 100,  25];
 
+      var trial_n = 12;
+      var trial_i = 0;
+      line_blue.angle = line_blue_angle[0];
+      line_blue.line_length = line_blue_length[0];
+      line_red.angle = line_red_angle[0];
 
-      var trial_n = 2;
-      for(var trial_i = 0; trial_i < (trial_n+1); trial_i++) {
-
-        line_blue.angle = stimli_list[trial_i]['line_blue_angle'];
-        line_blue.line_length = stimli_list[trial_i]['line_blue_length'];
-        line_red.angle = stimli_list[trial_i]['line_red_angle'];
-
+      for(var i = 0; i < trial_n; i++) {
         var rotate_node = {
           timeline: [trial],
           loop_function: function(data){
@@ -108,9 +109,10 @@
               return true;
             } else {
               if(trial_i < trial_n){
-                line_blue.angle = stimli_list[trial_i+1]['line_blue_angle'];
-                line_blue.line_length = stimli_list[trial_i+1]['line_blue_length'];
-                line_red.angle = stimli_list[trial_i+1]['line_red_angle'];
+                trial_i = trial_i +1;
+                line_blue.angle = line_blue_angle[trial_i];
+                line_blue.line_length = line_blue_length[trial_i];
+                line_red.angle = line_red_angle[trial_i];
                 return false;
               }
                 return false;
@@ -119,7 +121,6 @@
         };
         timeline.push(rotate_node);
       }
-
 
       /* 課題開始 */
       jsPsych.init({
