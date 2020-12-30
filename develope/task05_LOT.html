@@ -28,17 +28,6 @@
       /* timeline.push(fullscreen); */
       timeline.push(welcome);
 
-      /* 青線
-      var line_blue = {
-        obj_type: 'line',
-        startX: 800, // location in the canvas
-        startY: 400,
-        angle:  jsPsych.timelineVariable('line_blue_angle'),
-        line_length: jsPsych.timelineVariable('line_blue_length'),
-        line_width: 3,
-        line_color: 'blue',
-      }*/
-
       var line_blue = {
         obj_type: 'line',
         startX: 800, // location in the canvas
@@ -48,17 +37,6 @@
         line_width: 3,
         line_color: 'blue',
       }
-
-      /* 赤線
-      var line_red = {
-        obj_type: 'line',
-        startX: 200, // location in the canvas
-        startY: 400,
-        angle:  jsPsych.timelineVariable('line_red_angle'),
-        line_length: 100,
-        line_width: 3,
-        line_color: 'red',
-      }*/
 
       var line_red = {
         obj_type: 'line',
@@ -110,7 +88,14 @@
         {line_red_angle: 12, line_blue_angle:168, line_blue_length:25},
       ];
 
-      for (var i = 0; i<3; i++) {
+
+      var trial_n = 2;
+      for(var trial_i = 0; trial_i < (trial_n+1); trial_i++) {
+
+        line_blue.angle = stimli_list[trial_i]['line_blue_angle'];
+        line_blue.line_length = stimli_list[trial_i]['line_blue_length'];
+        line_red.angle = stimli_list[trial_i]['line_red_angle'];
+
         var rotate_node = {
           timeline: [trial],
           loop_function: function(data){
@@ -122,12 +107,19 @@
               line_blue.angle = line_blue.angle - 6;
               return true;
             } else {
-              return false;
+              if(trial_i < trial_n){
+                line_blue.angle = stimli_list[trial_i+1]['line_blue_angle'];
+                line_blue.line_length = stimli_list[trial_i+1]['line_blue_length'];
+                line_red.angle = stimli_list[trial_i+1]['line_red_angle'];
+                return false;
+              }
+                return false;
             }
           },
         };
         timeline.push(rotate_node);
       }
+
 
       /* 課題開始 */
       jsPsych.init({
