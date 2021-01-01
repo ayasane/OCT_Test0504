@@ -111,6 +111,7 @@
           timeline: [trial],
           loop_function: function(data){
             var last_select = jsPsych.data.get().last(1).values()[0].button_pressed;
+            /* var response_blue_angle = line_blue.angle; */
             if(last_select == "0"){
               line_blue.angle = line_blue.angle + 6;
               return true;
@@ -120,7 +121,6 @@
             } else {
               if(trial_i < trial_n){
                 trial_i = trial_i +1;
-                blue_angle = line_blue.angle;
                 line_blue.angle = line_blue_angle[trial_i];
                 line_blue.line_length = line_blue_length[trial_i];
                 line_blue.startX = line_blue_x[trial_i];
@@ -130,12 +130,10 @@
                 line_red.startY = line_red_y[trial_i];
                 return false;
               }
-                blue_angle = line_blue.angle;
-                respose_blue_angle = line_blue.angle;
                 return false;
             }
           },
-          data: {response_blue_angle: blue_angle},
+
         };
         timeline.push(rotate_node);
       }
