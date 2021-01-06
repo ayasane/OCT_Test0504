@@ -3,6 +3,7 @@
 <head>
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
     <script src="src/jspsych-6.1.0/plugins/smura-psychomotor-vigilance.js"></script>
     <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
@@ -20,37 +21,54 @@
       };
 
       var display_time = function () {
-          var rand = Math.round(Math.random() * 1000) + 2000;
+          var rand = Math.round(Math.random() * 10000) + 2000;
           console.log("[MAIN] interval duration: " + rand);
           return rand;
       };
 
       var interval = {
-        type: "html-keyboard-response",
-        stimulus: '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div>',
-        choices: jsPsych.NO_KEYS,
+        type: "html-button-response",
+        stimulus: ['<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div>',
+        '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><p> </p></div>'],
+        choices: ["PUSH"],
+        prompt: "PUSHボタンを押してカウントアップを止めてください。",
         trial_duration: display_time
       }
 
       var rtime = 0;
       var countup = {
-        type: "psychomotor-vigilance",
-        image: "img/task10_PVT/rectangle.png",
-        max_countup: 1000,
-        repeat: 1,
-        choices: ["stop"],
-        prompt: "stopボタンを押してカウントアップを止めてください。",
+        type: "html-button-response",
+        stimulus: ['<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div>',
+                   '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p> PUSH !!! </p></font></div>'],
+        choices: ["PUSH"],
+        prompt: "PUSHボタンを押してカウントアップを止めてください。",
+        trial_duration: 1000,
         on_finish: function(data) {
-          rtime = data.response_time;
+          if (data.rt != null) {
+            rtime = data.rt;
+          } else {
+            rtime = 1000;
+          }
+          console.log(rtime);
         }
       }
 
       var feedback = {
-        type: "html-keyboard-response",
-        stimulus: ['<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div>',
-                   '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rtime + '</p></font></div>'],
-        choices: jsPsych.NO_KEYS,
-        trial_duration: 500
+        type: "html-button-response",
+        choices: ["PUSH"],
+        prompt: "PUSHボタンを押してカウントアップを止めてください。",
+        trial_duration: 500,
+        on_start: function(trial){
+          var all_data = jsPsych.data.get().values();
+          console.log(all_data);
+          if (rtime == null){
+            rtime = 1000;
+          } else {
+            rtime = Math.floor(rtime);
+          }
+          trial.stimulus = ['<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div>',
+                            '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rtime + ' msec</p></font></div>']
+        }
       }
 
       var thread = {
