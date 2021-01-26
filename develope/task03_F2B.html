@@ -1,61 +1,207 @@
-<!DOCTYPE html>
 <html>
 <head>
-    <script src="src/jspsych-6.1.0/jspsych.js"></script>
-    <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
-    <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
-    	<script src="src/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
-    <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
+	<meta http-equiv="Content-Type"  content="text/html; charset=UTF-8"> 
+    <script src="jspsych-6.1.0/jspsych.js"></script>
+	<script src="jspsych-6.1.0/plugins/jspsych-survey-text.js"></script>
+	<script src="jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+	<script src="jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
+	<script src="jspsych-6.1.0/plugins/jspsych-serial-reaction-time.js"></script>
+	<script src="jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
+	<script src="jspsych-6.1.0/plugins/jspsych-instructions.js"></script>
+    <link rel="stylesheet" href="jspsych-6.1.0/css/jspsych.css"></link>
+	<script src="https://unpkg.com/dropbox@4.0.3/dist/Dropbox-sdk.min.js"></script>
+	
+	<style>
+		img {
+			width: 300px;
+		}
+	</style>
 </head>
+	
+<body></body>
 
-<body>
-    <script type="text/javascript">
-
-      /* 課題に関するコードを以下に書く */
-      var fullscreen = {
-        type: 'fullscreen',
-        message: '<p>以下のボタンをクリックすると，画面は全画面表示に切り替わります。全画面表示を止めたい場合はEscキーを押してください。</p>',
-        button_label: "全画面表示に切り替え",
-        fullscreen_mode: true
-      };
-      var welcome = {
-        type: "html-keyboard-response",
-        stimulus: "こんにちは！"
-      };
-
-      /*教示*/
-      var inst = {
-          type: "html-button-response",
-      		stimulus:"<p>実験にご協力いただきありがとうございます。まず画面いっぱいにこのウィンドウを広げてください。</p>"+
-      		"<p>今から下のような複雑な絵が順番に提示されます。</p>"+
-      		'<img src=image/instruction.jpg></img>'+
-      		"<p>絵は0.5秒で消えます。よく見て覚えてください。</p>"+
-      		"<p>続けて提示されていく絵が、「２つ前」の絵と同じだったらボタンを押してください。</p>"+
-      		"<p>２つ前の絵と同じでなければ何も押さないでください。絵が消えてから2.5秒後に次の絵が出ます。</p>"+
-      		"<p>絵は全部で60枚出ます。15枚ごとに休憩が入ります。好きなタイミングでボタンを押して次に進んでください。</p>"+
-      		"<p>ボタンを押さなくても絵は切り替わっていきますので、「2つ前」の絵と同じと判断したらなるべく早くボタンを押してください。</p>"+
-      		"<p>画像を見る際に不快に感じたり，気分が悪くなった場合は，途中で回答を中断しても構いません。</p>"+
-      		"<p>実験で得られたデータは研究者のみが確認、保管します。研究終了後に適切な方法で削除します。</p>"+
-      		"<p>実験中は画像がきちんと見える位置から画面を見るようにしてください。</p>"+
-      		"<p>実験に参加していただける場合は次のボタンを押して実験を始めてください。最初に＋が提示されてから実験が始まります。</p>",
-      	choices: ['実験参加に同意して始める'],
-      };
+<script>
 
 
-      /* タイムラインの設定 */
-      var timeline = [];
-/*      timeline.push(fullscreen);
-      timeline.push(welcome);*/
-      timeline.push(inst);
+var trialimage = [];
+var trialtarget = [];
+var trial = [];
+for (i = 0; i < 4; i++) {
+  trialimage[i] = [];
+  trialtarget[i] = [];
+  trial[i] = [];
+  for (j = 0; j < 15; j++) {
+    trialimage[i][j] = [];
+	trialtarget[i][j] = [];
+	trial[i][j] = [];
+  }
+}
 
-      /* 課題開始 */
-      jsPsych.init({
-        timeline: timeline,
-        on_finish: function() {
-          jsPsych.data.displayData();
-        }
-      });
 
-    </script>
-</body>
+var rest = [];
+var timeline=[];
+
+var imagename=[
+[15,16,15,5,15,5,19,3,10,3,6,19,3,19,8],
+[11,14,11,14,7,9,7,6,4,6,1,9,12,9,13],
+[10,5,10,4,16,4,16,18,8,12,8,12,18,2,18],
+[1,20,1,11,20,14,20,13,17,13,7,17,2,17,2]
+];
+
+var target=[
+[0,0,1,0,0,1,0,0,0,1,0,0,0,1,0],
+[0,0,1,1,0,0,1,0,0,1,0,0,0,1,0],
+[0,0,1,0,0,1,1,0,0,0,1,1,0,0,1],
+[0,0,1,0,0,0,1,0,0,1,0,0,0,1,1]
+];
+
+imagefiles=['image/1.jpeg','image/2.jpeg','image/3.jpeg','image/4.jpeg','image/5.jpeg','image/6.jpeg','image/7.jpeg','image/8.jpeg','image/9.jpeg','image/10.jpeg','image/11.jpeg','image/12.jpeg','image/13.jpeg','image/14.jpeg','image/15.jpeg','image/16.jpeg','image/17.jpeg','image/18.jpeg','image/19.jpeg','image/20.jpeg'];
+		
+		
+/*調査との照合のことば*/
+var word = {
+	type: 'survey-text',
+	questions: [
+	  {prompt: '調査の最後に設定した言葉を記入してください', columns: 50, name: 'ID'}
+    ],
+	on_finish: function(data){
+		var responses = JSON.parse(data.responses);
+		SubjectID = responses.ID;
+		var save_filename = '/2BackData/data'+SubjectID+now;
+		jsPsych.data.addProperties({participantCode: SubjectID});
+		}
+};
+		
+timeline.push(word);
+
+	var dropbox_access_token ="wMQbuTyzTtQAAAAAAAEzNd-ra88JtRA7FDUvhrSz9ZWfpsbrB3aeOVhImPDbskJ5";
+    var now=new Date();
+	
+    function save_data_json() {
+		var save_filename = '/2BackData/data'+SubjectID+now;
+            var dbx = new Dropbox.Dropbox({
+                accessToken: dropbox_access_token
+            });
+            dbx.filesUpload({
+                    path: save_filename + '.json',
+                    mode: 'overwrite',
+                    mute: true,
+                    contents: jsPsych.data.get().json()
+                })
+    }
+
+    function save_data_csv() {
+		var save_filename = '/2BackData/data'+SubjectID+now;
+            var dbx = new Dropbox.Dropbox({
+                accessToken: dropbox_access_token
+            });
+            dbx.filesUpload({
+                    path: save_filename + '.csv',
+                    mode: 'overwrite',
+                    mute: true,
+                    contents: jsPsych.data.get().csv()
+                })      
+    }
+
+		
+/*教示*/
+var inst = {
+    type: "html-button-response",
+		stimulus:"<p>実験にご協力いただきありがとうございます。まず画面いっぱいにこのウィンドウを広げてください。</p>"+
+		"<p>今から下のような複雑な絵が順番に提示されます。</p>"+
+		'<img src=image/instruction.jpg></img>'+
+		"<p>絵は0.5秒で消えます。よく見て覚えてください。</p>"+
+		"<p>続けて提示されていく絵が、「２つ前」の絵と同じだったらボタンを押してください。</p>"+
+		"<p>２つ前の絵と同じでなければ何も押さないでください。絵が消えてから2.5秒後に次の絵が出ます。</p>"+
+		"<p>絵は全部で60枚出ます。15枚ごとに休憩が入ります。好きなタイミングでボタンを押して次に進んでください。</p>"+
+		"<p>ボタンを押さなくても絵は切り替わっていきますので、「2つ前」の絵と同じと判断したらなるべく早くボタンを押してください。</p>"+
+		"<p>画像を見る際に不快に感じたり，気分が悪くなった場合は，途中で回答を中断しても構いません。</p>"+
+		"<p>実験で得られたデータは研究者のみが確認、保管します。研究終了後に適切な方法で削除します。</p>"+
+		"<p>実験中は画像がきちんと見える位置から画面を見るようにしてください。</p>"+
+		"<p>実験に参加していただける場合は次のボタンを押して実験を始めてください。最初に＋が提示されてから実験が始まります。</p>",
+	choices: ['実験参加に同意して始める'],
+}
+timeline.push(inst);
+
+
+/* 課題に関するコードを以下に書く */
+
+for(var i2=0; i2<4; i2++){
+	for(var i=0; i<15; i++){
+	trialimage[i2][i]='<img src=image/'+imagename[i2][i]+'.jpeg></img>';
+	trialtarget[i2][i]=target[i2][i];
+	}
+}
+
+/* 注視点 */
+var fixation = {
+      type: 'html-keyboard-response',
+      stimulus: '<div style="font-size:60px;">+</div>',
+      choices: jsPsych.NO_KEYS,
+      trial_duration: 1000
+      }
+
+/* タイムラインの設定 */
+for(var i2=0; i2<4; i2++){
+
+timeline.push(fixation);
+
+	for(var i=0; i<15; i++){
+		trial[i2][i] = {
+			type: 'html-button-response',
+			stimulus: trialimage[i2][i],
+			stimulus_width : 100,
+			choices: ['２つ前と同じ'],
+			stimulus_duration: 500,
+			trial_duration: 2500,
+			response_ends_trial: false,
+			data: {
+				target: trialtarget[i2][i],
+			},
+		}
+	
+	
+	var test_procedure = {
+	timeline: [trial[i2][i]]
+	}
+	
+	timeline.push(test_procedure);
+	}
+	
+	rest = {
+		type: 'html-button-response',
+		stimulus: '休憩です',
+			choices: ['次へ進みます'],
+			response_ends_trial: true,
+	}
+	timeline.push(rest);
+
+}
+
+		
+var finishthanks = {
+	type: 'html-keyboard-response',
+    stimulus: ['データを保存中です。次のページに移ったらウィンドウを閉じてください。ご協力誠にありがとうございました。'],
+	choices: jsPsych.NO_KEYS,
+	trial_duration: 1500,
+}
+		
+timeline.push(finishthanks);
+		
+/* 課題開始 */
+jsPsych.init({
+  timeline: timeline,
+		preload_images:imagefiles,
+	show_progress_bar: true,
+  on_finish: function() {
+		var save_filename = '/2BackData/data'+SubjectID+now;
+    jsPsych.data.displayData();
+	save_data_json();
+	save_data_csv();
+  }
+
+});
+	
+</script>
+
 </html>
