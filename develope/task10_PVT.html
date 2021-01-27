@@ -20,6 +20,15 @@
         fullscreen_mode: true
       };
 
+      var instruction = {
+        type: 'html-button-response',
+        stimulus: ['<p>画面上に，赤い枠が表示されます。</br>時々，赤い枠の中に”PUSH!!!”と表示されるので，”PUSH!!!”が現れたら素早く下にあるPUSHボタンを押してください。</br>\
+                    その後，”PUSH!!!”が現れてからあなたがキーを押すまでの時間が表示されます。ここまでの流れを繰り返します。</br>\
+                    いつ”PUSH!!!”が現れるかわからないので，赤い枠の中をよく見ていてください。</p>'],
+        choices: ['NEXT'],
+        prompt: '次の画面へ行くために”NEXT”ボタンを押してください'
+      };
+
       var display_time = function () {
           var rand = Math.round(Math.random() * 10000) + 2000;
           console.log("[MAIN] interval duration: " + rand);
@@ -27,21 +36,21 @@
       };
 
       var interval = {
-        type: "html-button-response",
-        stimulus: ['<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div>',
-        '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><p> </p></div>'],
-        choices: ["PUSH"],
-        prompt: "PUSHボタンを押してカウントアップを止めてください。",
+        type: 'html-button-response',
+        stimulus: ['<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div><br>\
+                    <div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><p> </p></div>'],
+        choices: ['PUSH'],
+        //prompt: '"PUSH!!!"が現れたら素早くPUSHボタンを押してください。',
         trial_duration: display_time
       }
 
       var rtime = 0;
       var countup = {
         type: "html-button-response",
-        stimulus: ['<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div>',
-                   '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p> PUSH !!! </p></font></div>'],
+        stimulus: ['<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div></br>\
+                    <div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p> PUSH !!! </p></font></div>'],
         choices: ["PUSH"],
-        prompt: "PUSHボタンを押してカウントアップを止めてください。",
+        //prompt: '"PUSH!!!"が現れたら素早くPUSHボタンを押してください。',
         trial_duration: 1000,
         on_finish: function(data) {
           if (data.rt != null) {
@@ -56,7 +65,7 @@
       var feedback = {
         type: "html-button-response",
         choices: ["PUSH"],
-        prompt: "PUSHボタンを押してカウントアップを止めてください。",
+        //prompt: '"PUSH!!!"が現れたら素早くPUSHボタンを押してください。',
         trial_duration: 500,
         on_start: function(trial){
           var all_data = jsPsych.data.get().values();
@@ -66,8 +75,8 @@
           } else {
             rtime = Math.floor(rtime);
           }
-          trial.stimulus = ['<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div>',
-                            '<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rtime + ' msec</p></font></div>']
+          trial.stimulus = ['<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div><br>\
+                             <div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rtime + ' msec</p></font></div>']
         }
       }
 
@@ -78,7 +87,8 @@
 
       /* タイムラインの設定 */
       var timeline = [];
-      //timeline.push(fullscreen);
+      timeline.push(fullscreen);
+      timeline.push(instruction);
       timeline.push(thread);
 
       /* 課題開始 */
