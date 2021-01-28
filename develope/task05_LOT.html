@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
 </head>
 
-<body bgcolor="#000", text="#FFF">
+<body bgcolor="#FFF", text="#000">
     <script type="text/javascript">
 
       /* 課題に関するコードを以下に書く */
@@ -35,7 +35,7 @@
         angle:  90,
         line_length: 100,
         line_width: 3,
-        line_color: 'blue',
+        line_color: 'blue'
       }
 
       var line_red = {
@@ -45,7 +45,7 @@
         angle:  0,
         line_length: 100,
         line_width: 3,
-        line_color: 'red',
+        line_color: 'red'
       }
 
       /* 回転の教示 */
@@ -55,7 +55,7 @@
        startY: 680,
        content: '青い線を回転させるために\nボタンを押してください',
        font: "16px 'Arial'",
-       text_color: 'white',
+       text_color: 'black'
       }
 
       /* 終了の教示 */
@@ -65,21 +65,22 @@
        startY: 680,
        content: '２つの線の方向が同じになったら\n「終了」を押してください',
        font: "16px 'Arial'",
-       text_color: 'white',
+       text_color: 'black',
       }
 
+      var blue_angle = 0;
 
       var trial = {
           type: 'psychophysics',
           response_type: 'button',
           stimuli: [line_blue,line_red,text_rotate,text_finish],
-          button_choices: ['<div style="position: absolute; top: 80%; right: 32%"><img src="img/task05_LOT/img_right.png" width="100px"/></div>',
-          '<div style="position: absolute; top: 80%; right: 62%"><img src="img/task05_LOT/img_left.png" width="100px"/></div>',
-          '<div style="position: absolute; top: 80%; right: 47%"><img src="img/task05_LOT/img_fin.png" width="100px"/></div>'],
+          button_choices: ['<div style="position: absolute; top: 80%; right: 62%"><img src="img/task05_LOT/img_left.png" width="100px"/></div>',
+          '<div style="position: absolute; top: 80%; right: 47%"><img src="img/task05_LOT/img_fin.png" width="100px"/></div>',
+          '<div style="position: absolute; top: 80%; right: 32%"><img src="img/task05_LOT/img_right.png" width="100px"/></div>'],
           button_html:  '<button class="jspsych-btn">%choice%</button>',
           canvas_width: 1000,
           canvas_height: 800,
-          background_color: "black",
+          background_color: "white"
       }
 
       /* In R
@@ -96,7 +97,7 @@
 
       var trial_n = 12;
       var trial_i = 0;
-      var blue_angle = 0;
+
       /* trial 1*/
       line_blue.angle = line_blue_angle[0];
       line_blue.line_length = line_blue_length[0];
@@ -109,18 +110,21 @@
       for(var i = 0; i < trial_n; i++) {
         var rotate_node = {
           timeline: [trial],
-          loop_function: function(data){
+          loop_function: function(){
             var last_select = jsPsych.data.get().last(1).values()[0].button_pressed;
             /* var response_blue_angle = line_blue.angle; */
-            if(last_select == "0"){
+            if(last_select == "2"){
               line_blue.angle = line_blue.angle + 6;
+              blue_angle = line_blue.angle;
               return true;
-            } else if(last_select == "1"){
+            } else if(last_select == "0"){
               line_blue.angle = line_blue.angle - 6;
+              blue_angle = line_blue.angle;
               return true;
             } else {
               if(trial_i < trial_n){
                 trial_i = trial_i +1;
+                blue_angle = line_blue.angle;
                 line_blue.angle = line_blue_angle[trial_i];
                 line_blue.line_length = line_blue_length[trial_i];
                 line_blue.startX = line_blue_x[trial_i];
