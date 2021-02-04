@@ -17,19 +17,33 @@
         button_label: "全画面表示に切り替え",
         fullscreen_mode: true
       };
-      var instruction = {
-        type: "html-keyboard-response",
-        stimulus: "教示？"
-      };
 
       var instruction = {
-        type: "html-keyboard-response",
-        stimulus: "練習？"
+              type: "html-button-response",
+              stimulus_width : 300,
+          		stimulus:"<p>今から画面に出てくる緑色の四角を追いかけてクリックもしくはタッチする課題を行います。</p>"+
+          		'<img src=img/task01_MP/instruction.jpg></img>'+
+          		"<p>緑の四角は画面のどこかに現れ、クリックもしくはタッチすると移動します。</p>"+
+          		"<p>現れたらすぐにクリックもしくはタッチしてください。</p>"+
+          		"<p>緑の四角は移動するごとに小さくなっていきます。</p>"+
+          		"<p>20回クリックもしくはタッチすると終了です。</p>"+
+          		"<p>練習と本番があります。練習では緑色の四角がクリックもしくはタッチするまで移動しません。</p>"+
+              "<p>本番では5秒間で次の場所に移動します。</p>"+
+          		"<p>画面がきちんと見える位置から画面を見るようにしてください。</p>"+
+          		"<p>次のボタンを押して始めてください。</p>",
+          	   choices: ['始める'],
+          }
+
+      var instructionPractice = {
+        type: "html-button-response",
+        stimulus: "<p>練習をはじめます。</p><p>最初に十字が出るのでみていてください。</p>",
+        choices: ['始める'],
       };
 
       var instructionMain = {
-        type: "html-keyboard-response",
-        stimulus: "本番？"
+        type: "html-button-response",
+        stimulus:"<p>本番をはじめます。</p><p>最初に十字が出るのでみていてください。</p>",
+        choices: ['始める'],
       };
 
       var fixation = {
@@ -62,7 +76,7 @@
       var maintest = [];
 
       /*timeline.push(fullscreen);*/
-      timeline.push(instruction,fixation);
+      timeline.push(instruction,instructionPractice,fixation);
 
       for(var i=0; i<20; i++){
           var buttontype=
