@@ -128,6 +128,15 @@ timeline.push(instructionMain,fixation);
           timeline.push(maintest[i]);
       };
 
+      /* 終了 */
+      var finish = {
+        type: 'html-keyboard-response',
+        stimulus: ['データを保存中です。'],
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 1500,
+      }
+      timeline.push(finish);
+
       /* 課題開始 */
       jsPsych.init({
         timeline: timeline,
