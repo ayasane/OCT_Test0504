@@ -51,7 +51,7 @@
       [0,0,1,0,0,0,1,0,0,1,0,0,0,1,1]
     ];
 
-    // /* 画像事前読み込み:全部読んじゃう */
+    // /* 画像事前読み込み:リスト全部いれちゃう */
     for (var i=0; i<4;i++){
         var block=1;
       for (var i2=0; i2<20;i2++){
@@ -66,7 +66,17 @@
       choices:['1','2','3','4'],
       on_finish: function(data) {
         select = Number(data.button_pressed)+1;
-      },
+      }
+    };
+
+    var imgload=function(){
+      // select=Number(jsPsych.data.get().values()[0].button_pressed)+1;button_pressedがまだみえない
+      for(let i=0; i<4; i++){
+          for(let i2=0; i2<15; i2++){
+              select=1;/*うまくselectを持ってこれないので1に固定中*/
+              trialimage[i][i2]="<img src=img/task03_F2B/F2B_imgFile"+select+"/"+imagename[i][i2]+".jpeg></img>";
+          };
+      };
     };
 
     var check={
@@ -85,22 +95,7 @@
       prompt:'間違えた場合はリロードしてください'
     };
 
-    var imgload=function(){
-      for(let i=0; i<2; i++){
-          for(let i2=0; i2<3; i2++){
-            select=1;/*うまくselectを持ってこれないので1に固定中*/
-              trialimage[i][i2]="<img src=img/task03_F2B/F2B_imgFile"+select+"/"+imagename[i][i2]+".jpeg></img>";
-          };
-      };
-      return trialimage;
-    };
-
-  var imgcheck={
-    type: 'call-function',
-    func: imgload,
-  }
-
-    timeline.push(version,check,imgcheck);
+    timeline.push(version,check);
 
     /*教示*/
     var inst = {
@@ -114,7 +109,7 @@
     		"<p>絵は全部で60枚出ます。15枚ごとに休憩が入ります。好きなタイミングでボタンを押して次に進んでください。</p>"+
     		"<p>ボタンを押さなくても絵は切り替わっていきますので、「2つ前」の絵と同じと判断したらなるべく早くボタンを押してください。</p>"+
     		"<p>画像がきちんと見える位置から画面を見るようにしてください。</p>"+
-    		"<p>次のボタン押して始めてください。最初に＋が提示されてから始まります。</p>",
+    		"<p>次のボタンを押して始めてください。最初に＋が提示されてから始まります。</p>",
     	   choices: ['始める'],
     }
     timeline.push(inst);
@@ -128,11 +123,11 @@
           }
 
     /* 注視点から刺激の提示　１５試行x4ブロック */
-    for(i=0; i<2; i++){
+    for(var i=0; i<4; i++){
       timeline.push(fixation);
-
-    	for(i2=0; i2<3; i2++){
+    	for(var i2=0; i2<15; i2++){
         trial[i][i2]={
+          on_start: imgload(),
     			type: 'html-button-response',
           stimulus:trialimage[i][i2],
     			choices: ['２つ前と同じ'],
@@ -141,11 +136,11 @@
     			response_ends_trial: false,
     			data: {
     				target: target[i][i2],
-    			},
-          on_start: imgload()
+    			}
         };
         timeline.push(trial[i][i2]);
       };
+
       /* 休憩 */
     	var rest = {
     		type: 'html-button-response',
@@ -170,7 +165,7 @@
     /* 実行 */
     jsPsych.init({
       timeline: timeline,
-    	preload_images:imagefiles,
+    	preload_images:imagefiles[select],
       on_finish: function() {
         jsPsych.data.displayData();
       }
