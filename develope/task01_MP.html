@@ -17,7 +17,7 @@
         button_label: "全画面表示に切り替え",
         fullscreen_mode: true
       };
-
+      
       var instruction = {
               type: "html-button-response",
               stimulus_width : 300,
@@ -76,8 +76,8 @@
       var maintest = [];
 
       /*timeline.push(fullscreen);*/
-      timeline.push(instruction,instructionPractice,fixation);
 
+      timeline.push(instruction,instructionPractice,fixation);
       for(var i=0; i<20; i++){
           var buttontype=
           '<button type="button" \
@@ -136,6 +136,7 @@ timeline.push(instructionMain,fixation);
         trial_duration: 1500,
       }
       timeline.push(finish);
+
 
       /* 課題開始 */
       jsPsych.init({
