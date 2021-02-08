@@ -20,7 +20,7 @@
       };
       var welcome = {
         type: "html-keyboard-response",
-        stimulus: "これから画面上に赤色と青色の線が出てきます。<br>２つは異なった角度になっていますので，<br>青色の線を回転させて赤色の線と同じ角度になるように調整してください。<br><br>青色の線は左右の「右」もしくは「左」ボタンをクリックすると回転できます。<br>赤色の線と同じ角度になったら，「終了」ボタンをクリックしてください。"
+        stimulus: "これから画面上に赤色と青色の線が出てきます。<br>２つは異なった角度になっていますので，<br>青色の線を回転させて赤色の線と同じ角度になるように調整してください。<br><br>青色の線は左右の「右」もしくは「左」ボタンをクリックすると回転できます。<br>赤色の線と同じ角度になったら，「終了」ボタンをクリックしてください。<br><br>用意ができたら，キーボードのキーをどれか押して始めてください。"
       };
 
       /* タイムラインの設定 */
@@ -80,7 +80,16 @@
           button_html:  '<button class="jspsych-btn">%choice%</button>',
           canvas_width: 1000,
           canvas_height: 800,
-          background_color: "white"
+          background_color: "white",
+          on_finish: function(data){
+            data.blue_angle = line_blue.angle;
+            data.blue_length = line_blue.line_length;
+            data.blue_X = line_blue.startX;
+            data.blue_Y = line_blue.startY;
+            data.red_angle = line_red_angle[0];
+            data.red_X = line_red.angle;
+            data.red_Y = line_red.startY;
+          }
       }
 
       /* In R
