@@ -18,7 +18,7 @@
         button_label: "全画面表示に切り替え",
         fullscreen_mode: true
       };
-      var welcome = {
+      var instruction_1 = {
         type: "html-keyboard-response",
         stimulus: "これから画面上に赤色と青色の線が出てきます。<br>２つは異なった角度になっていますので，<br>青色の線を回転させて赤色の線と同じ角度になるように調整してください。<br><br>青色の線は左右の「右」もしくは「左」ボタンをクリックすると回転できます。<br>赤色の線と同じ角度になったら，「終了」ボタンをクリックしてください。<br><br>用意ができたら，キーボードのキーをどれか押して始めてください。"
       };
@@ -26,7 +26,7 @@
       /* タイムラインの設定 */
       var timeline = [];
       /* timeline.push(fullscreen); */
-      timeline.push(welcome);
+      timeline.push(instruction_1);
 
       var line_blue = {
         obj_type: 'line',
@@ -86,19 +86,57 @@
             data.blue_length = line_blue.line_length;
             data.blue_X = line_blue.startX;
             data.blue_Y = line_blue.startY;
-            data.red_angle = line_red_angle[0];
-            data.red_X = line_red.angle;
+            data.red_angle = line_red.angle;
+            data.red_X = line_red.startX;
             data.red_Y = line_red.startY;
+            if(data.red_angle == data.blue_angle || data.red_angle == 180-data.blue_angle){
+              data.correct_response = 1;
+            }else{
+              data.correct_response = 0;
+            }
           }
       }
 
-      /* In R
-      sample(c(0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165))
-      sample(c(100, 50, 25, 100, 50, 25, 100, 50, 25, 100, 50, 25))
+      /* practice 1
+      line_blue.angle = 60;
+      line_blue.line_length = 150;
+      line_blue.startX = 800;
+      line_blue.startY = 400;
+      line_red.angle = 24;
+      line_red.line_length = 200;
+      line_red.startX = 200;
+      line_red.startY = 400;
+      var practice1 = {
+        timeline: [trial],
+        loop_function: function(){
+          var last_select = jsPsych.data.get().last(1).values()[0].button_pressed;
+          if(last_select == "2"){
+            line_blue.angle = line_blue.angle + 6;
+            return true;
+          } else if(last_select == "0"){
+            line_blue.angle = line_blue.angle - 6;
+            return true;
+          } else {
+              return false;
+          }
+        },
+      };
+      timeline.push(practice1);
       */
-      var line_red_angle = [60, 165, 150, 135, 120,  90,   0,  30,  15,  45, 105,  75];
-      var line_blue_angle = [45, 60, 15,  165, 105, 135, 120,  90,  75,  30,  150,   0];
-      var line_blue_length = [50, 100,  25,  50,  25,  50, 100, 100,  50,  25, 100,  25];
+
+
+      /* In R
+      # angle
+      angle_red <- sample(c(6, 24, 36, 54, 66, 84, 96, 114, 126, 144, 156, 174))
+      angle_blue <- sample(c(6, 24, 36, 54, 66, 84, 96, 114, 126, 144, 156, 174))
+      # most efficient solution
+      abs(ifelse(angle_red > 90, 180 - angle_red, angle_red) - ifelse(angle_blue > 90, 180 - angle_blue, angle_blue))/6
+      # length of blue
+      sample(c(100, 100, 100, 75, 75, 75, 50, 50, 50, 25, 25, 25))
+      */
+      var line_red_angle = [174,36,84,96,156,114,24,126,66,6,54,144];
+      var line_blue_angle = [24,6,54,126,96,174,84,156,144,66,114,36];
+      var line_blue_length = [25, 75, 100, 50, 75, 25, 25, 50, 75, 100, 50, 100];
       var line_blue_x = [800,800,800,800,800,800,800,800,800,800,800,800];
       var line_blue_y = [200, 500, 100, 450,200, 500, 100, 450,200, 500, 100, 450];
       var line_red_x = [200,200,200,200,200,200,200,200,200,200,200,200];
@@ -113,27 +151,24 @@
       line_blue.startX = line_blue_x[0];
       line_blue.startY = line_blue_y[0];
       line_red.angle = line_red_angle[0];
+      line_red.line_length = 100;
       line_red.startX = line_red_x[0];
       line_red.startY = line_red_y[0];
 
       for(var i = 0; i < trial_n; i++) {
-        var rotate_node = {
+        var lot = {
           timeline: [trial],
           loop_function: function(){
             var last_select = jsPsych.data.get().last(1).values()[0].button_pressed;
-            /* var response_blue_angle = line_blue.angle; */
             if(last_select == "2"){
               line_blue.angle = line_blue.angle + 6;
-              blue_angle = line_blue.angle;
               return true;
             } else if(last_select == "0"){
               line_blue.angle = line_blue.angle - 6;
-              blue_angle = line_blue.angle;
               return true;
             } else {
               if(trial_i < trial_n){
                 trial_i = trial_i +1;
-                blue_angle = line_blue.angle;
                 line_blue.angle = line_blue_angle[trial_i];
                 line_blue.line_length = line_blue_length[trial_i];
                 line_blue.startX = line_blue_x[trial_i];
@@ -148,8 +183,14 @@
           },
 
         };
-        timeline.push(rotate_node);
+        timeline.push(lot);
       }
+
+      var instruction_end = {
+        type: "html-keyboard-response",
+        stimulus: "課題は終了です。お疲れ様でした。"
+      };
+      timeline.push(instruction_end);
 
       /* 課題開始 */
       jsPsych.init({
