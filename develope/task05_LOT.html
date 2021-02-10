@@ -209,21 +209,21 @@
           loop_function: function(){
             var last_select = jsPsych.data.get().last(1).values()[0].button_pressed;
             if(last_select == "2"){
-              if(line_blue_p.angle == 180){
-                line_blue_p.angle = 0;
+              if(line_blue.angle == 180){
+                line_blue.angle = 0;
               }
               line_blue.angle = line_blue.angle + 6;
-              if(line_blue_p.angle == 180){
-                line_blue_p.angle = 0;
+              if(line_blue.angle == 180){
+                line_blue.angle = 0;
               }
               return true;
             } else if(last_select == "0"){
-              if(line_blue_p.angle == 0){
-                line_blue_p.angle = 180;
+              if(line_blue.angle == 0){
+                line_blue.angle = 180;
               }
               line_blue.angle = line_blue.angle - 6;
-              if(line_blue_p.angle == 0){
-                line_blue_p.angle = 180;
+              if(line_blue.angle == 0){
+                line_blue.angle = 180;
               }
               return true;
             } else {
