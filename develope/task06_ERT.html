@@ -3,6 +3,7 @@
 <head>
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-html-button_response.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
     <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
 </head>
@@ -17,24 +18,37 @@
         button_label: "全画面表示に切り替え",
         fullscreen_mode: true
       };
+
       var welcome = {
         type: "html-keyboard-response",
         stimulus: "こんにちは！"
       };
 
+      var images = ['img/task06_ERT/train_1.png','img/task06_ERT/train_2.png',
+      'img/task06_ERT/1_1.png','img/task06_ERT/1_2.png','img/task06_ERT/1_3.png','img/task06_ERT/1_4.png','img/task06_ERT/1_5.png',
+      'img/task06_ERT/2_1.png','img/task06_ERT/2_2.png','img/task06_ERT/2_3.png','img/task06_ERT/2_4.png','img/task06_ERT/2_5.png',
+      'img/task06_ERT/3_1.png','img/task06_ERT/3_2.png','img/task06_ERT/3_3.png','img/task06_ERT/3_4.png','img/task06_ERT/3_5.png',
+      'img/task06_ERT/4_1.png','img/task06_ERT/4_2.png','img/task06_ERT/4_3.png','img/task06_ERT/4_4.png','img/task06_ERT/4_5.png',
+      'img/task06_ERT/5_1.png','img/task06_ERT/5_2.png','img/task06_ERT/5_3.png','img/task06_ERT/5_4.png','img/task06_ERT/5_5.png',
+      'img/task06_ERT/6_1.png','img/task06_ERT/6_2.png','img/task06_ERT/6_3.png','img/task06_ERT/6_4.png','img/task06_ERT/6_5.png',
+      'img/task06_ERT/7_1.png','img/task06_ERT/7_2.png','img/task06_ERT/7_3.png','img/task06_ERT/7_4.png','img/task06_ERT/7_5.png',
+      'img/task06_ERT/8_1.png','img/task06_ERT/8_2.png','img/task06_ERT/8_3.png','img/task06_ERT/8_4.png','img/task06_ERT/8_5.png',
+      ];
+
       /* タイムラインの設定 */
       var timeline = [];
-      timeline.push(fullscreen);
+      /* timeline.push(fullscreen);*/
       timeline.push(welcome);
 
       /* 課題開始 */
       jsPsych.init({
         timeline: timeline,
+        preload_images: images,
         on_finish: function() {
           jsPsych.data.displayData();
         }
       });
-      
+
     </script>
 </body>
 </html>
