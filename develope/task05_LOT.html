@@ -20,7 +20,7 @@
       };
       var instruction_1 = {
         type: "html-keyboard-response",
-        stimulus: "これから画面上に赤色と青色の線が出てきます。<br>２つは異なった角度になっていますので，<br>青色の線を回転させて赤色の線と同じ角度になるように調整してください。<br><br>青色の線は左右の「右」もしくは「左」ボタンをクリックすると回転できます。<br>赤色の線と同じ角度になったら，「終了」ボタンをクリックしてください。<br><br>用意ができたら，キーボードのキーをどれか押して始めてください。"
+        stimulus: "これから画面上に赤色と青色の線が，異なった角度で出てきます。<br>赤色の線と同じ角度になるように，青色の線を回転させて調整してください。<br><br>青色の線は，「右」ボタンをクリックすると右回転，「左」ボタンをクリックすると左回転します。<br>赤色の線と同じ角度になったと思ったら，「終了」ボタンをクリックしてください。<br><br>それでは，練習をします。<br>用意ができたら，キーボードのキーをどれか押して始めてください。"
       };
 
       /* タイムラインの設定 */
@@ -102,10 +102,24 @@
         loop_function: function(){
           var last_select = jsPsych.data.get().last(1).values()[0].button_pressed;
           if(last_select == "2"){
+              /* メモ：回転の段階で180を越えていたら0にリセットする，回転の結果180越えても0にリセットする*/
+            if(line_blue_p.angle == 180){
+              line_blue_p.angle = 0;
+            }
             line_blue_p.angle = line_blue_p.angle + 6;
+            if(line_blue_p.angle == 180){
+              line_blue_p.angle = 0;
+            }
             return true;
           } else if(last_select == "0"){
+              /* メモ：回転の段階で0以下だったら0にリセットする，回転の結果0以下でも0にリセットする*/
+            if(line_blue_p.angle == 0){
+              line_blue_p.angle = 180;
+            }
             line_blue_p.angle = line_blue_p.angle - 6;
+            if(line_blue_p.angle == 0){
+              line_blue_p.angle = 180;
+            }
             return true;
           } else {
               return false;
@@ -116,7 +130,7 @@
 
       var instruction_2 = {
         type: "html-keyboard-response",
-        stimulus: "やり方は分かりましたか？<br>「右」・「左」をクリックして青色の線を回転させて，赤色の線と同じ角度になるようにしてください。<br>赤色の線と同じ角度になったら，「終了」ボタンをクリックしてください。<br>本番に進んで良いようでしたらスペースキーを押してください。",
+        stimulus: "取り組んでいただく内容は理解いただけましたでしょうか？<br><br>「右」か「左」のボタンをクリックして，青色の線を回転させて，赤色の線と同じ角度にしてください。<br>赤色の線と同じ角度になったと思ったら，「終了」ボタンをクリックしてください。<br><br>本番に進んで良いようでしたらスペースキーを押してください。",
       };
       timeline.push(instruction_2);
 
@@ -129,10 +143,10 @@
       # length of blue
       sample(c(100, 100, 100, 100, 50, 50, 50, 50, 25, 25, 25, 25))
       */
-      var line_red_angle   = [174,36,84,96,156,114,24,126,66,6,54,144];
-      var line_blue_angle  = [24,6,54,126,96,174,84,156,144,66,114,36];
-      var line_blue_length = [100,25,100,50,100,100,25,50,50,25,25,50];
-                         /*1   3    4    2    4    2    3    1    2    4    3    1 */
+      var line_red_angle   = [174, 84,  36,  96, 156, 114, 24, 126,  66,  6,  54, 144];
+      var line_blue_angle  = [24,   6,  54, 126,  96, 174, 84, 156, 144, 66, 114,  36];
+      var line_blue_length = [100, 25, 100,  50, 100, 100, 25,  50,  50, 25,  25,  50];
+                         /*1   3    4    2    4    2    3    1    2    4    3    1 ＜1=水平下,2=水平上,3=対角青右下,4=対角青右上＞*/
       var line_blue_x = [800, 724, 724, 800, 724, 800, 724, 800, 800, 724, 724, 800];
       var line_blue_y = [400, 500, 150, 200, 100, 150, 550, 400, 150, 100, 550, 450];
       var line_red_x =  [200, 276, 276, 200, 276, 200, 276, 200, 200, 276, 276, 200];
@@ -142,19 +156,19 @@
 
       var line_blue = {
         obj_type: 'line',
-        startX: 800, // location in the canvas
-        startY: 400,
-        angle:  24,
-        line_length: 100,
+        startX: line_blue_x[0],
+        startY: line_blue_y[0],
+        angle:  line_blue_angle[0],
+        line_length: line_blue_length[0],
         line_width: 3,
         line_color: 'blue'
       }
 
       var line_red = {
         obj_type: 'line',
-        startX: 200, // location in the canvas
-        startY: 400,
-        angle:  174,
+        startX: line_red_x[0],
+        startY: line_red_y[0],
+        angle:  line_red_angle[0],
         line_length: 100,
         line_width: 3,
         line_color: 'red'
@@ -195,10 +209,22 @@
           loop_function: function(){
             var last_select = jsPsych.data.get().last(1).values()[0].button_pressed;
             if(last_select == "2"){
+              if(line_blue_p.angle == 180){
+                line_blue_p.angle = 0;
+              }
               line_blue.angle = line_blue.angle + 6;
+              if(line_blue_p.angle == 180){
+                line_blue_p.angle = 0;
+              }
               return true;
             } else if(last_select == "0"){
+              if(line_blue_p.angle == 0){
+                line_blue_p.angle = 180;
+              }
               line_blue.angle = line_blue.angle - 6;
+              if(line_blue_p.angle == 0){
+                line_blue_p.angle = 180;
+              }
               return true;
             } else {
               if(trial_i < trial_n){
