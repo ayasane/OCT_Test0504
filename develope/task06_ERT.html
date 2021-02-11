@@ -26,7 +26,7 @@
       /* 教示１*/
       var instruction_1 = {
         type: "html-keyboard-response",
-        stimulus: "表情画像の感情を選んでください。"
+        stimulus: "これから画面上に表情画像が出てきます。<br>その表情が，怒り，恐れ，幸せ，悲しみ，無感情のどれか判断をしてください。<br><br>それでは，練習をします。<br>用意ができたら，キーボードのキーをどれか押して始めてください。",
       };
       timeline.push(instruction_1);
 
@@ -131,7 +131,7 @@
       /* 教示１*/
       var instruction_2 = {
         type: "html-keyboard-response",
-        stimulus: "やり方はOK?"
+        stimulus: "取り組んでいただく内容は理解いただけましたでしょうか？<br><br>表情画像が出てきますので，それが怒り，恐れ，幸せ，悲しみ，無感情のどれか判断をしてください。<br><br>用意ができたら，どれかキーボードのキーを押して，本番に進んでください。",
       };
       timeline.push(instruction_2);
 
@@ -161,6 +161,11 @@
       };
       timeline.push(ert_trial);
 
+      var instruction_end = {
+        type: "html-keyboard-response",
+        stimulus: "課題は終了です。お疲れ様でした。"
+      };
+      timeline.push(instruction_end);
 
       /* 課題開始 */
       jsPsych.init({
