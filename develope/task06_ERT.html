@@ -3,7 +3,7 @@
 <head>
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
-    <script src="src/jspsych-6.1.0/plugins/jspsych-html-button_response.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
     <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
 </head>
@@ -12,19 +12,42 @@
     <script type="text/javascript">
 
       /* 課題に関するコードを以下に書く */
+      /* タイムラインの設定 */
+      var timeline = [];
+
       var fullscreen = {
         type: 'fullscreen',
         message: '<p>以下のボタンをクリックすると，画面は全画面表示に切り替わります。全画面表示を止めたい場合はEscキーを押してください。</p>',
         button_label: "全画面表示に切り替え",
         fullscreen_mode: true
       };
+      /* timeline.push(fullscreen);*/
 
       var welcome = {
         type: "html-keyboard-response",
         stimulus: "こんにちは！"
       };
+      timeline.push(welcome);
 
-      var images = ['img/task06_ERT/train_1.png','img/task06_ERT/train_2.png',
+      /* ERT Images */
+      var buttons = ['img/task06_ERT/anger.png',
+                     'img/task06_ERT/fear.png',
+                     'img/task06_ERT/happy.png',
+                     'img/task06_ERT/sad.png',
+                     'img/task06_ERT/no.png'];
+
+      var images_t = ['img/task06_ERT/train_1.png','img/task06_ERT/train_2.png']
+
+      var stimuli_t = [
+      {
+        image: images_t[0],
+        data: { no:'2', stim_type: 'incongruent', correct_key_press: '74'}
+      },{
+        image: images_t[1],
+        data: { no:'2', stim_type: 'incongruent', correct_key_press: '74'}
+      }];
+
+      var images = [
       'img/task06_ERT/1_1.png','img/task06_ERT/1_2.png','img/task06_ERT/1_3.png','img/task06_ERT/1_4.png','img/task06_ERT/1_5.png',
       'img/task06_ERT/2_1.png','img/task06_ERT/2_2.png','img/task06_ERT/2_3.png','img/task06_ERT/2_4.png','img/task06_ERT/2_5.png',
       'img/task06_ERT/3_1.png','img/task06_ERT/3_2.png','img/task06_ERT/3_3.png','img/task06_ERT/3_4.png','img/task06_ERT/3_5.png',
@@ -34,16 +57,34 @@
       'img/task06_ERT/7_1.png','img/task06_ERT/7_2.png','img/task06_ERT/7_3.png','img/task06_ERT/7_4.png','img/task06_ERT/7_5.png',
       'img/task06_ERT/8_1.png','img/task06_ERT/8_2.png','img/task06_ERT/8_3.png','img/task06_ERT/8_4.png','img/task06_ERT/8_5.png',
       ];
+      /* Train */
+      var ert_train = {
+        timeline:[{
+        stimulus: jsPsych.timelineVariable('image'),
+        type: 'html-button-response',
+        choices: [
+          '<div style="position: absolute; top: 10%; right: 10%"><img src="'+buttons[0]+'"width="200px"/></div>',
+          '<div style="position: absolute; top: 25%; right: 10%"><img src="'+buttons[1]+'"width="200px"/></div>',
+          '<div style="position: absolute; top: 40%; right: 10%"><img src="'+buttons[2]+'"width="200px"/></div>',
+          '<div style="position: absolute; top: 55%; right: 10%"><img src="'+buttons[3]+'"width="200px"/></div>',
+          '<div style="position: absolute; top: 70%; right: 10%"><img src="'+buttons[4]+'"width="200px"/></div>'],
+          button_html: '%choice%',
+        }],
+          timeline_variables: stimuli_t,
+        };
+      timeline.push(ert_train);
 
-      /* タイムラインの設定 */
-      var timeline = [];
-      /* timeline.push(fullscreen);*/
-      timeline.push(welcome);
+
+      /* ERT */
+
+
 
       /* 課題開始 */
       jsPsych.init({
         timeline: timeline,
         preload_images: images,
+        preload_images: buttons,
+        preload_images: images_t,
         on_finish: function() {
           jsPsych.data.displayData();
         }
