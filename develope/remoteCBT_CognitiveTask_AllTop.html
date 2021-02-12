@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="src/jspsych-6.1.0/jspsych.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
+    <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
+</head>
+
+<body>
+<script type="text/javascript">
+//var task=['task01_MP.html','task02_VOLT.html','task03_F2B.html','task04_AM.html','task05_LOT.html','task06_ERT.html','task07_MRT.html','task08_DSST.html','task09_BART.html','task10_PVT.html'];
+var timeline=[];
+var select=[];
+
+var instruction = {
+    type: "html-button-response",
+    stimulus_width : 300,
+		stimulus:"課題を選んでください。",
+	  choices: ['task01_MP','task02_VOLT','task03_F2B','task04_AM','task05_LOT','task06_ERT','task07_MRT','task08_DSST','task09_BART','task10_PVT']
+}
+
+var check = {
+    type: "html-button-response",
+    stimulus: function(){
+      select=Number(jsPsych.data.get().last(1).values()[0].button_pressed)+1;
+      return [select+'番を行います。']
+    },
+    choices:['進む'],
+    prompt:'間違えた場合はリロードしてください',
+
+    on_finish: function() {
+      if(select=="1"){
+        window.location = "task01_MP.html";
+      }else if(select=="2"){
+        window.location = "task02_VOLT.html";
+      }else if(select=="3"){
+        window.location = "task03_F2B.html";
+      }else if(select=="4"){
+        window.location = "task04_AM.html";
+      }else if(select=="5"){
+        window.location = "task05_LOT.html";
+      }else if(select=="6"){
+        window.location = "task06_ERT.html";
+      }else if(select=="7"){
+        window.location = "task07_MRT.html";
+      }else if(select=="8"){
+        window.location = "task08_DSST.html";
+      }else if(select=="9"){
+        window.location = "task09_BART.html";
+      }else if(select=="10"){
+        window.location = "task010_PVT.html";
+      }
+    }
+  }
+
+timeline.push(instruction,check);
+
+jsPsych.init({
+  timeline: timeline,
+});
+
+</script>
+</body>
+</html>
