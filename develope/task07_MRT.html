@@ -1,11 +1,15 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <script src="src/jspsych-6.1.0/jspsych.js"></script>
-    <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
-    <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
-    <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
-</head>
+  <head>
+      <title>VOLT experiment</title>
+      <script src="src/jspsych-6.1.0/jspsych.js"></script>
+      <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+      <script src="src/jspsych-6.1.0/plugins/jspsych-image-keyboard-response.js"></script>
+      <script src="src/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
+      <script src="src/jspsych-6.1.0/plugins/jspsych-instructions.js"></script>
+      <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
+      <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
+  </head>
 
 <body>
     <script type="text/javascript">
@@ -17,15 +21,108 @@
         button_label: "全画面表示に切り替え",
         fullscreen_mode: true
       };
+
+
       var welcome = {
-        type: "html-keyboard-response",
-        stimulus: "こんにちは！"
+        type: "html-button-response",
+        stimulus: 'マトリックス推論課題'+
+        '<br><br>図形全体を完成させるために最適なパーツを選ぶ課題です。' +
+        '<br>選択は数字キーの１～８のいずれかを推して反応してください。'+
+        '<br><br>次のページから課題が始まります。',
+        choices: ['次へ']
+      };
+
+
+      var learning_phase = {
+        type: "html-button-response",
+        stimulus: '【フェーズ１】'+
+        '<br><b>これから，５秒ずつ１０個の画像が出てくるので記憶してください。</b>',
+        choices: ['スタート']
+      };
+
+      var test_phase = {
+        type: "html-button-response",
+        stimulus: '【フェーズ２】'+
+        '<br><br>これから，２０枚の画像が１枚ずつ出てきます。'+
+        '<br>先ほど覚えた画像であれば <b>F キー</b> を，新しい画像であれば <b>J キー</b>を押して下さい。'+
+        '<br><br>正解かどうかのフィードバックはありません。'+
+        '<br><br>制限時間はありませんので，自分のペースで進んでください。',
+        choices: ['スタート']
+      };
+
+/*
+参考URL: https://www.jspsych.org/overview/timeline/
+timelineVariable の２つ目の引数について：　https://www.jspsych.org/core_library/jspsych-core/
+*/
+
+/*
+3回続けて間違うと課題が終了するようにrepfalseを入れる？それとも全部やらせる？？
+（途中で終了する場合は，全１１問，という表示を変更する必要がある）
+*/
+      var sumcorrect = 0;
+      var repfalse = 0;
+      var test_procedure = {
+          timeline: [
+              {
+                  type: 'html-keyboard-response',
+                  stimulus: '+',
+                  choices: jsPsych.NO_KEYS,
+                  trial_duration: 500
+              },
+              {
+                  type: 'image-keyboard-response',
+                  stimulus: jsPsych.timelineVariable('stim'),
+                  choices: jsPsych.NO_KEYS,
+                  stimulus_height:800,
+                  choices: ['1','2','3','4','5','6','7','8'],
+                  correct: jsPsych.timelineVariable('correct'),
+                  data: {
+                    correct_response: jsPsych.timelineVariable('correct_response')
+                  },
+                  on_finish: function(data){
+                    data.correct = jsPsych.pluginAPI.compareKeys(data.key_press, data.correct_response);
+                    if(data.correct == 1){
+                      sumcorrect = sumcorrect + 1;
+                      repfalse = 0;
+                    } else {
+                      repfalse = repfalse + 1;
+                    };
+                  }
+              }
+          ],
+          timeline_variables: [
+              { stim: 'img/task07_MRT/vfig12043.JPG', correct_response: '4'},
+              { stim: 'img/task07_MRT/vfig12044.JPG', correct_response: '3'},
+              { stim: 'img/task07_MRT/vfig12045.JPG', correct_response: '5'},
+              { stim: 'img/task07_MRT/vfig12046.JPG', correct_response: '2'},
+              { stim: 'img/task07_MRT/vfig12047.JPG', correct_response: '2'},
+              { stim: 'img/task07_MRT/vfig12048.JPG', correct_response: '4'},
+              { stim: 'img/task07_MRT/vfig12050.JPG', correct_response: '5'},
+              { stim: 'img/task07_MRT/vfig12053.JPG', correct_response: '3'},
+              { stim: 'img/task07_MRT/vfig12054.JPG', correct_response: '1'},
+              { stim: 'img/task07_MRT/vfig12055.JPG', correct_response: '4'},
+              { stim: 'img/task07_MRT/vfig12056.JPG', correct_response: '5'},
+          ],
+          randomize_order: true
+      };
+
+      var final_page = {
+        type: "html-button-response",
+        stimulus: function(){
+          return 'お疲れ様でした！'+
+          '<br><br>全11問中　' + sumcorrect + '　問正解でした。<br><br>'
+        },
+        choices: ['終わる'],
       };
 
       /* タイムラインの設定 */
+
       var timeline = [];
       timeline.push(fullscreen);
       timeline.push(welcome);
+      timeline.push(test_procedure,final_page);
+
+
 
       /* 課題開始 */
       jsPsych.init({
@@ -34,7 +131,7 @@
           jsPsych.data.displayData();
         }
       });
-      
+
     </script>
 </body>
 </html>
