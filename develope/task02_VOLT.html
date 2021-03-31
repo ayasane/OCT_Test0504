@@ -26,18 +26,19 @@
       var welcome = {
         type: "html-button-response",
         stimulus: '記憶課題です。'+
-        '<br><br>この課題は下記の２つのフェーズに分かれています。' +
-        '<br>[フェーズ１] ５秒ずつ提示される１０枚の図形を記憶する。'+
-        '<br>[フェーズ２] ２０枚の画像が提示されるので，記憶した画像か，新しい図形か，を判断する。'+
-        '<br><br>次のページから課題が始まります。',
+        'この課題は下記の２部構成です。' +
+        '<br><br><b>【第１部：学習】</b>１０個の図形が、それぞれ５秒ずつ提示されます。それらの図形を記憶して下さい。'+
+        '<br><br><b>【第２部：記憶テスト】</b>「第１部で学習した図形」と「新しい図形」とがランダムに１つずつ提示されます。'+
+        '<br>それぞれの図形が、学習したものか、新しいものかを判断してください。',
         choices: ['次へ']
       };
 
 
       var learning_phase = {
         type: "html-button-response",
-        stimulus: '【フェーズ１】'+
-        '<br><b>これから，５秒ずつ１０個の画像が出てくるので記憶してください。</b>',
+        stimulus: '<b>【第１部：学習】</b>'+
+        '<br><b>これから，１０個の画像がそれぞれ５秒ずつ表示されるので、注意深く記憶してください。</b>'+
+        '<br>（提示される順番は覚える必要はありません。）',
         choices: ['スタート']
       };
 
@@ -56,21 +57,20 @@
 timelineVariable の２つ目の引数について：　https://www.jspsych.org/core_library/jspsych-core/
 */
 
-
       var learning_procedure = {
           timeline: [
               {
                   type: 'html-keyboard-response',
                   stimulus: '+',
                   choices: jsPsych.NO_KEYS,
-                  trial_duration: 500
+                  trial_duration: 1000
               },
               {
                   type: 'image-keyboard-response',
                   stimulus: jsPsych.timelineVariable('stim1'),
                   choices: jsPsych.NO_KEYS,
                   stimulus_height:200,
-                  trial_duration: 2000
+                  trial_duration: 5000
               }
           ],
           timeline_variables: [
@@ -78,6 +78,12 @@ timelineVariable の２つ目の引数について：　https://www.jspsych.org/
               { stim1: 'img/task02_VOLT/s3b.JPG' },
               { stim1: 'img/task02_VOLT/s4a.JPG' },
               { stim1: 'img/task02_VOLT/s4b.JPG' },
+              { stim1: 'img/task02_VOLT/s5a.JPG' },
+              { stim1: 'img/task02_VOLT/s5b.JPG' },
+              { stim1: 'img/task02_VOLT/s6a.JPG' },
+              { stim1: 'img/task02_VOLT/s6b.JPG' },
+              { stim1: 'img/task02_VOLT/s8a.JPG' },
+              { stim1: 'img/task02_VOLT/s8b.JPG' },
           ],
           randomize_order: true
       }
@@ -138,10 +144,22 @@ timelineVariable の２つ目の引数について：　https://www.jspsych.org/
               { stim2: 'img/task02_VOLT/s3b.JPG', correct: 'old'},
               { stim2: 'img/task02_VOLT/s4a.JPG', correct: 'old'},
               { stim2: 'img/task02_VOLT/s4b.JPG', correct: 'old'},
+              { stim2: 'img/task02_VOLT/s5a.JPG', correct: 'old'},
+              { stim2: 'img/task02_VOLT/s5b.JPG', correct: 'old'},
+              { stim2: 'img/task02_VOLT/s6a.JPG', correct: 'old'},
+              { stim2: 'img/task02_VOLT/s6b.JPG', correct: 'old'},
+              { stim2: 'img/task02_VOLT/s8a.JPG', correct: 'old'},
+              { stim2: 'img/task02_VOLT/s8b.JPG', correct: 'old'},
               { stim2: 'img/task02_VOLT/s3c.JPG', correct: 'new'},
               { stim2: 'img/task02_VOLT/s3d.JPG', correct: 'new'},
               { stim2: 'img/task02_VOLT/s4c.JPG', correct: 'new'},
               { stim2: 'img/task02_VOLT/s4d.JPG', correct: 'new'},
+              { stim2: 'img/task02_VOLT/s5c.JPG', correct: 'new'},
+              { stim2: 'img/task02_VOLT/s5d.JPG', correct: 'new'},
+              { stim2: 'img/task02_VOLT/s6c.JPG', correct: 'new'},
+              { stim2: 'img/task02_VOLT/s6d.JPG', correct: 'new'},
+              { stim2: 'img/task02_VOLT/s8c.JPG', correct: 'new'},
+              { stim2: 'img/task02_VOLT/s8d.JPG', correct: 'new'},
           ],
           randomize_order: true
       };
