@@ -27,27 +27,10 @@
         type: "html-button-response",
         stimulus: 'マトリックス推論課題'+
         '<br><br>図形全体を完成させるために最適なパーツを選ぶ課題です。' +
-        '<br>選択は数字キーの１～８のいずれかを推して反応してください。 時間制限は？？？'+
+        '<br>選択には数字キーを押します。' +
+        '<br><br>時間制限はありません。自分のペースで進めてください。'+
         '<br><br>次のページから課題が始まります。',
         choices: ['次へ']
-      };
-
-
-      var learning_phase = {
-        type: "html-button-response",
-        stimulus: '【フェーズ１】'+
-        '<br><b>これから，５秒ずつ１０個の画像が出てくるので記憶してください。</b>',
-        choices: ['スタート']
-      };
-
-      var test_phase = {
-        type: "html-button-response",
-        stimulus: '【フェーズ２】'+
-        '<br><br>これから，２０枚の画像が１枚ずつ出てきます。'+
-        '<br>先ほど覚えた画像であれば <b>F キー</b> を，新しい画像であれば <b>J キー</b>を押して下さい。'+
-        '<br><br>正解かどうかのフィードバックはありません。'+
-        '<br><br>制限時間はありませんので，自分のペースで進んでください。',
-        choices: ['スタート']
       };
 
 /*
@@ -61,6 +44,7 @@ timelineVariable の２つ目の引数について：　https://www.jspsych.org/
 */
       var sumcorrect = 0;
       var repfalse = 0;
+      var Ntrial = 0;
       var test_procedure = {
           timeline: [
               {
@@ -72,15 +56,17 @@ timelineVariable の２つ目の引数について：　https://www.jspsych.org/
               {
                   type: 'image-keyboard-response',
                   stimulus: jsPsych.timelineVariable('stim'),
-                  choices: jsPsych.NO_KEYS,
-                  stimulus_height:800,
+                  stimulus_height:600,
                   choices: ['1','2','3','4','5','6','7','8'],
                   correct: jsPsych.timelineVariable('correct'),
                   data: {
                     correct_response: jsPsych.timelineVariable('correct_response')
                   },
+                  prompt: '<br><b>上部の図形を完成させるために「？」に入れる最適なパーツを下の選択肢から選び、'+
+                  '<br>キーボードの対応する数字キーを押して下さい。</b>',
                   on_finish: function(data){
                     data.correct = jsPsych.pluginAPI.compareKeys(data.key_press, data.correct_response);
+                    Ntrial = Ntrial + 1;
                     if(data.correct == 1){
                       sumcorrect = sumcorrect + 1;
                       repfalse = 0;
@@ -103,14 +89,21 @@ timelineVariable の２つ目の引数について：　https://www.jspsych.org/
               { stim: 'img/task07_MRT/vfig12055.JPG', correct_response: '4'},
               { stim: 'img/task07_MRT/vfig12056.JPG', correct_response: '5'},
           ],
-          randomize_order: true
+          randomize_order: false,
+          conditional_function: function () {
+            if (repfalse > 2) {
+              return false;
+            } else {
+              return true;
+            }
+          },
       };
 
       var final_page = {
         type: "html-button-response",
         stimulus: function(){
           return 'お疲れ様でした！'+
-          '<br><br>全11問中　' + sumcorrect + '　問正解でした。<br><br>'
+          '<br><br>全' + Ntrial + '問中 ' + sumcorrect + ' 問正解でした。<br><br>'
         },
         choices: ['終わる'],
       };
@@ -121,8 +114,6 @@ timelineVariable の２つ目の引数について：　https://www.jspsych.org/
       timeline.push(fullscreen);
       timeline.push(welcome);
       timeline.push(test_procedure,final_page);
-
-
 
       /* 課題開始 */
       jsPsych.init({
