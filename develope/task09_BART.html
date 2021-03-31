@@ -4,6 +4,7 @@
     <title>BART experiment</title>
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
     <script src="src/jspsych-psychophysics.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-survey-text.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-instructions.js"></script>
@@ -143,23 +144,26 @@
     },
   };
 
-  var Finish = {
+  var balloon_max = [5,25,15,4];
 
+  var TestProcedure = {
+    timeline: [Trial],
+    timeline_variables: balloon_max,
+    randomize_order: false,
+    repetitions: 1
   }
 
-var balloon_max = [5,25,15,4];
-
-var TestProcedure = {
-  timeline: [Trial],
-  timeline_variables: balloon_max,
-  randomize_order: false,
-  repetitions: 1
-}
+  var final_page = {
+    type: "html-button-response",
+    stimulus: function(){
+      return 'お疲れ様でした！'+
+      '<br><br>合計獲得ポイントは、' + pointTotal + ' ポイントでした。<br><br>'
+    },
+    choices: ['終わる'],
+  };
 
   var timeline = [];
-  timeline.push(Ins_block);
-  //timeline.push(ID_Ins_block);
-  timeline.push(TestProcedure);
+  timeline.push(Ins_block,TestProcedure,final_page);
 
   var images = ['img/task09_BART/balloon1.jpg', 'img/task09_BART/balloon2.jpg'];
   var audio = ['audio/task09_BART/casino.mp3', 'audio/task09_BART/explosion.mp3','audio/task09_BART/inflate.mp3'];
