@@ -6,6 +6,7 @@
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
     <script src="src/jspsych-psychophysics.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-survey-text.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-instructions.js"></script>
     <link href="src/jspsych-6.1.0/css/jspsych.css" rel="stylesheet" type="text/css"></link>
   </head>
   <body></body>
@@ -13,16 +14,26 @@
   <script>
 
   var Ins_block = {
-      type: 'html-keyboard-response',
-      stimulus: '<p>とりあえず <b>Fキー</b> 押して！とりあえず４試行。ローカルのファイルを参照する時は音は出ない模様<p>' +
-      "<p>Throughout the task, you will be presented with 21 balloons separately. For each balloon you can click on the button labelled INFLATE to increase the size of the balloon. Each time you increase the balloon size you will increase the amount of tickets in the prize draw for three separate prize draws of 20, 15 and 10 pounds. You currently have 20 tickets. You will accumulate 1 ticket in a temporary bank for each pump. You will be shown the amount you have accumulated in your temporary bank.</p>" +
-      '<p> stuff and things</p>',
-      choices: ['f']
-  }
-
-  var ID_Ins_block = {
-    type: 'survey-text',
-    questions: ['Please enter the identification number which was generated just a second ago. This should be a combination of 10 digits then your favourite film/book/magazine/song and a randomly selected fictional character. You can copy and paste this into the text input section']
+    type: 'instructions',
+    pages: [
+      'これから３０個の風船が１個ずつ画面に表示されます。'+
+      '<br><b>【膨らます】ボタン</b> をクリックすると、風船が膨らみます。'+
+      '<br>ボタンをクリックする度に、風船は少しずつ膨らみますが、<u>膨らましすぎると破裂します。</u>'+
+      '<br><br>それぞれの風船を何回膨らますかは、あなた次第です。１回膨らますだけで破裂する風船もあるかもしれませんし、画面いっぱいまで膨らませる風船もあるかもしれません。'+
+      '<br><br>この課題では、風船を膨らます毎に<b>５ポイント</b>を獲得できます。しかし、<u>風船が割れると、その風船で獲得していたポイントは０</u>になります。' +
+      '<br>それぞれの風船が割れる前に獲得したポイントを受け取るには、 <b>【今の金額で受け取る】ボタン</b>を押して下さい。'+
+      '<br>このボタンを押すか、もしくは風船が割れると、次の新しい風船が現れます。'+
+      '<br><br>課題の最後に、合計で獲得された金額に応じて謝礼が支払われます。',
+      '下記は、この課題の概要をまとめます。<b>'+
+      '<br><br>※ 風船を膨らます毎に５ポイント獲得できます。'+
+      '<br>※ ただし、風船が割れると、その風船を膨らまして獲得していたポイントは０になります。' +
+      '<br>※ 風船によって、割れるまでの回数は異なります。' +
+      '<br>※ 課題中に出てくる風船は３０個です。' +
+      '<br>※ 最後に合計ポイントに応じて謝金に上乗せがあります。</b>' +
+      '<br><br><br>それでは次のページから本番です！<br>（この課題では音がなります。）'],
+    show_clickable_nav: true,
+    button_label_previous:'戻る',
+    button_label_next: '次へ',
   }
 
   var pointTotal = 0;
@@ -131,6 +142,10 @@
       }
     },
   };
+
+  var Finish = {
+
+  }
 
 var balloon_max = [5,25,15,4];
 
