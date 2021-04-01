@@ -25,9 +25,9 @@
 
       var welcome = {
         type: "html-button-response",
-        stimulus: 'マトリックス推論課題'+
+        stimulus:
         '<br><br>図形全体を完成させるために最適なパーツを選ぶ課題です。' +
-        '<br>選択には数字キーを押します。' +
+        '<br>選択にはキーボードの数字キーを押します。' +
         '<br><br>時間制限はありません。自分のペースで進めてください。'+
         '<br><br>次のページから課題が始まります。',
         choices: ['次へ']
@@ -62,7 +62,7 @@ timelineVariable の２つ目の引数について：　https://www.jspsych.org/
                   data: {
                     correct_response: jsPsych.timelineVariable('correct_response')
                   },
-                  prompt: '<br><b>上部の図形を完成させるために「？」に入れる最適なパーツを下の選択肢から選び、'+
+                  prompt: '<br><b>上の３×３の図形を完成させるために「？」に入れる最適なパーツを下の選択肢から選び、'+
                   '<br>キーボードの対応する数字キーを押して下さい。</b>',
                   on_finish: function(data){
                     data.correct = jsPsych.pluginAPI.compareKeys(data.key_press, data.correct_response);
