@@ -3,6 +3,7 @@
 <head>
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
     <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
 </head>
@@ -11,30 +12,172 @@
     <script type="text/javascript">
 
       /* 課題に関するコードを以下に書く */
+      /* タイムラインの設定 */
+      var timeline = [];
+
       var fullscreen = {
         type: 'fullscreen',
         message: '<p>以下のボタンをクリックすると，画面は全画面表示に切り替わります。全画面表示を止めたい場合はEscキーを押してください。</p>',
         button_label: "全画面表示に切り替え",
         fullscreen_mode: true
       };
-      var welcome = {
-        type: "html-keyboard-response",
-        stimulus: "こんにちは！"
-      };
+      /* timeline.push(fullscreen);*/
 
-      /* タイムラインの設定 */
-      var timeline = [];
-      timeline.push(fullscreen);
-      timeline.push(welcome);
+      /* 教示１*/
+      var instruction_1 = {
+        type: "html-keyboard-response",
+        stimulus: "これから画面上に表情画像が出てきます。<br>その表情が，怒り，恐れ，幸せ，悲しみ，無感情のどれか判断をしてください。<br><br>それでは，練習をします。<br>用意ができたら，キーボードのキーをどれか押して始めてください。",
+      };
+      timeline.push(instruction_1);
+
+      /* images of buttons */
+      var buttons = ['img/task06_ERT/anger.png',
+                     'img/task06_ERT/fear.png',
+                     'img/task06_ERT/happy.png',
+                     'img/task06_ERT/sad.png',
+                     'img/task06_ERT/no.png'];
+
+      var images_t = ['img/task06_ERT/train_1.png','img/task06_ERT/train_2.png']
+
+      var stimuli_t = [
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images_t[0]+'"width="600px"/></div>', data: {correct_response: '3'}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images_t[1]+'"width="600px"/></div>', data: {correct_response: '2'}
+      }];
+
+      var images = [
+      'img/task06_ERT/1_1.png','img/task06_ERT/1_2.png','img/task06_ERT/1_3.png','img/task06_ERT/1_4.png','img/task06_ERT/1_5.png',
+      'img/task06_ERT/2_1.png','img/task06_ERT/2_2.png','img/task06_ERT/2_3.png','img/task06_ERT/2_4.png','img/task06_ERT/2_5.png',
+      'img/task06_ERT/3_1.png','img/task06_ERT/3_2.png','img/task06_ERT/3_3.png','img/task06_ERT/3_4.png','img/task06_ERT/3_5.png',
+      'img/task06_ERT/4_1.png','img/task06_ERT/4_2.png','img/task06_ERT/4_3.png','img/task06_ERT/4_4.png','img/task06_ERT/4_5.png',
+      'img/task06_ERT/5_1.png','img/task06_ERT/5_2.png','img/task06_ERT/5_3.png','img/task06_ERT/5_4.png','img/task06_ERT/5_5.png',
+      'img/task06_ERT/6_1.png','img/task06_ERT/6_2.png','img/task06_ERT/6_3.png','img/task06_ERT/6_4.png','img/task06_ERT/6_5.png',
+      'img/task06_ERT/7_1.png','img/task06_ERT/7_2.png','img/task06_ERT/7_3.png','img/task06_ERT/7_4.png','img/task06_ERT/7_5.png',
+      'img/task06_ERT/8_1.png','img/task06_ERT/8_2.png','img/task06_ERT/8_3.png','img/task06_ERT/8_4.png','img/task06_ERT/8_5.png',
+      ];
+
+      /* めちゃくちゃ冗長な書き方してます */
+      var stimuli = [
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[0]+'"width="600px"/></div>', data: {correct_response: '3', gender:"male", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[1]+'"width="600px"/></div>', data: {correct_response: '2', gender:"male", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[2]+'"width="600px"/></div>', data: {correct_response: '0', gender:"male", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[3]+'"width="600px"/></div>', data: {correct_response: '4', gender:"male", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[4]+'"width="600px"/></div>', data: {correct_response: '1', gender:"male", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[5]+'"width="600px"/></div>', data: {correct_response: '3', gender:"male", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[6]+'"width="600px"/></div>', data: {correct_response: '2', gender:"male", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[7]+'"width="600px"/></div>', data: {correct_response: '0', gender:"male", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[8]+'"width="600px"/></div>', data: {correct_response: '4', gender:"male", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[9]+'"width="600px"/></div>', data: {correct_response: '1', gender:"male", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[10]+'"width="600px"/></div>', data: {correct_response: '3', gender:"male", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[11]+'"width="600px"/></div>', data: {correct_response: '2', gender:"male", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[12]+'"width="600px"/></div>', data: {correct_response: '0', gender:"male", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[13]+'"width="600px"/></div>', data: {correct_response: '4', gender:"male", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[14]+'"width="600px"/></div>', data: {correct_response: '1', gender:"male", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[15]+'"width="600px"/></div>', data: {correct_response: '3', gender:"male", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[16]+'"width="600px"/></div>', data: {correct_response: '2', gender:"male", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[17]+'"width="600px"/></div>', data: {correct_response: '0', gender:"male", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[18]+'"width="600px"/></div>', data: {correct_response: '4', gender:"male", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[19]+'"width="600px"/></div>', data: {correct_response: '1', gender:"male", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[20]+'"width="600px"/></div>', data: {correct_response: '3', gender:"female", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[21]+'"width="600px"/></div>', data: {correct_response: '2', gender:"female", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[22]+'"width="600px"/></div>', data: {correct_response: '0', gender:"female", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[23]+'"width="600px"/></div>', data: {correct_response: '4', gender:"female", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[24]+'"width="600px"/></div>', data: {correct_response: '1', gender:"female", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[25]+'"width="600px"/></div>', data: {correct_response: '3', gender:"female", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[26]+'"width="600px"/></div>', data: {correct_response: '2', gender:"female", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[27]+'"width="600px"/></div>', data: {correct_response: '0', gender:"female", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[28]+'"width="600px"/></div>', data: {correct_response: '4', gender:"female", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[29]+'"width="600px"/></div>', data: {correct_response: '1', gender:"female", emotion:"High"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[30]+'"width="600px"/></div>', data: {correct_response: '3', gender:"female", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[31]+'"width="600px"/></div>', data: {correct_response: '2', gender:"female", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[32]+'"width="600px"/></div>', data: {correct_response: '0', gender:"female", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[33]+'"width="600px"/></div>', data: {correct_response: '4', gender:"female", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[34]+'"width="600px"/></div>', data: {correct_response: '1', gender:"female", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[35]+'"width="600px"/></div>', data: {correct_response: '3', gender:"female", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[36]+'"width="600px"/></div>', data: {correct_response: '2', gender:"female", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[37]+'"width="600px"/></div>', data: {correct_response: '0', gender:"female", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[38]+'"width="600px"/></div>', data: {correct_response: '4', gender:"female", emotion:"Low"}},
+        {face: '<div style="position: absolute; top: 20%; right: 40%"><img src="'+images[39]+'"width="600px"/></div>', data: {correct_response: '1', gender:"female", emotion:"Low"}}
+      ];
+
+      /* Train */
+      var ert_train = {
+        timeline:[{
+        stimulus: jsPsych.timelineVariable('face'),
+        type: 'html-button-response',
+        choices: [
+          '<div style="position: absolute; top: 10%; right: 10%"><img src="'+buttons[0]+'"width="200px"/></div>',
+          '<div style="position: absolute; top: 25%; right: 10%"><img src="'+buttons[1]+'"width="200px"/></div>',
+          '<div style="position: absolute; top: 40%; right: 10%"><img src="'+buttons[2]+'"width="200px"/></div>',
+          '<div style="position: absolute; top: 55%; right: 10%"><img src="'+buttons[3]+'"width="200px"/></div>',
+          '<div style="position: absolute; top: 70%; right: 10%"><img src="'+buttons[4]+'"width="200px"/></div>'],
+          button_html: '%choice%',
+          data: jsPsych.timelineVariable('data'),
+          on_finish: function(data){
+            if(data.button_pressed == data.correct_response){
+              data.b = data.button_pressed;
+              data.c = data.correct_response;
+              data.correct = 1;
+            }else{
+              data.b = data.button_pressed;
+              data.c = data.correct_response;
+              data.correct = 0;
+            }
+          }
+        }],
+          timeline_variables: stimuli_t,
+      };
+      timeline.push(ert_train);
+
+      /* 教示１*/
+      var instruction_2 = {
+        type: "html-keyboard-response",
+        stimulus: "取り組んでいただく内容は理解いただけましたでしょうか？<br><br>表情画像が出てきますので，それが怒り，恐れ，幸せ，悲しみ，無感情のどれか判断をしてください。<br><br>用意ができたら，どれかキーボードのキーを押して，本番に進んでください。",
+      };
+      timeline.push(instruction_2);
+
+      /* ERT */
+      var ert_trial = {
+        timeline:[{
+        stimulus: jsPsych.timelineVariable('face'),
+        type: 'html-button-response',
+        choices: [
+          '<div style="position: absolute; top: 10%; right: 10%"><img src="'+buttons[0]+'"width="200px"/></div>',
+          '<div style="position: absolute; top: 25%; right: 10%"><img src="'+buttons[1]+'"width="200px"/></div>',
+          '<div style="position: absolute; top: 40%; right: 10%"><img src="'+buttons[2]+'"width="200px"/></div>',
+          '<div style="position: absolute; top: 55%; right: 10%"><img src="'+buttons[3]+'"width="200px"/></div>',
+          '<div style="position: absolute; top: 70%; right: 10%"><img src="'+buttons[4]+'"width="200px"/></div>'],
+          button_html: '%choice%',
+          data: jsPsych.timelineVariable('data'),
+          on_finish: function(data){
+            if(data.button_pressed == data.correct_response){
+              data.correct = 1;
+            }else{
+              data.correct = 0;
+            }
+          }
+        }],
+          timeline_variables: stimuli,
+          sample: {type: 'fixed-repetitions',size: 2}
+      };
+      timeline.push(ert_trial);
+
+      var instruction_end = {
+        type: "html-keyboard-response",
+        stimulus: "課題は終了です。お疲れ様でした。"
+      };
+      timeline.push(instruction_end);
 
       /* 課題開始 */
       jsPsych.init({
         timeline: timeline,
+        preload_images: images,
+        preload_images: buttons,
+        preload_images: images_t,
         on_finish: function() {
           jsPsych.data.displayData();
         }
       });
-      
+
     </script>
 </body>
 </html>
