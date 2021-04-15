@@ -42,7 +42,7 @@
   var pump_count = 0;
   var bulloon_condition = 0;
   var trialNum = 1;
-  var size = 0.2;
+  var size = 0.08;//0.2;
 
   var sounds = {
       obj_type: 'sound', // means a rectangle
@@ -55,16 +55,16 @@
                 file: 'img/task09_BART/balloon1.jpg',
                 scale: 0.1,
                 startX: 500,
-                startY: 400,
-                width: 1,
-                height:1,
+                startY: 560,//400,
+                //width: 4,
+                //height:5,
               },sounds],
     //stimulus: 'img/task09_BART/balloon1.jpg',
 
     response_type: 'button',
     button_choices: ['膨らます','今の金額で受け取る'],
     canvas_width: 1000,
-    canvas_height: 500,
+    canvas_height: 610,//500
     background_color: 'white',
     prompt: function(){
       return '<div align="left">' +
@@ -76,7 +76,7 @@
     response_ends_trial: true,
     on_start: function(Text_summary){
       Text_summary.stimuli[0].scale = size;
-      Text_summary.stimuli[0].startY = 400 - 15/2* pump_count;
+      Text_summary.stimuli[0].startY = 560-2.03*pump_count;//400 - 15/2* pump_count;
 
       if(pump_count != 0){
         if(bulloon_condition == 0){ // 膨らます
@@ -85,7 +85,7 @@
 
         if(bulloon_condition == 1){ // 割れた
           Text_summary.stimuli[0].file =  'img/task09_BART/balloon2.jpg';
-          Text_summary.stimuli[0].startY = 400 - 15/2* (pump_count-1);
+          Text_summary.stimuli[0].startY = 560-2.03*(pump_count-1);//400 - 15/2* (pump_count-1);
           Text_summary.stimuli[1].file = 'audio/task09_BART/explosion.mp3';
         }
 
@@ -119,13 +119,14 @@
     loop_function: function(data,Trial){
       if(data.values()[0].button_pressed == 0){
         pump_count += 1;
-        if(pump_count == balloon_max[(trialNum-1)] ){//上限に達した時
+        if(Math.random() <= 1/(128-pump_count+1)){//上限に達した時
+        //if(pump_count == balloon_max[(trialNum-1)] ){
           bulloon_condition = 1;
           pointPotential = 0;
           return true;
         } else {
           //jsPsych.data.addDataToLastTrial({banked: true});
-          size += 0.05;
+          size += 0.0048;
           pointPotential += 5;
           return true;
         }
@@ -137,20 +138,27 @@
         pump_count = 0;
         bulloon_condition = 0;
         pointPotential = 0;
-        size = 0.2;
+        size = 0.08;
         trialNum += 1;
         return false;
       }
     },
+    on_finish: function(data){
+      if(bulloon_condition != 0){//破裂か受け取った時だけ，下記を記録する。
+        data.Ntrial = trialNum;
+        data.pump_count = pump_count;
+        data.balloon_condition = bulloon_condition; // 1:破裂, 2:受け取り
+      }
+    },
   };
 
-  var balloon_max = [5,25,15,4];
+  //var balloon_max = [5,25,15,4];
 
   var TestProcedure = {
     timeline: [Trial],
-    timeline_variables: balloon_max,
-    randomize_order: false,
-    repetitions: 1
+    //timeline_variables: balloon_max,
+    //randomize_order: false,
+    repetitions: 30
   }
 
   var final_page = {
