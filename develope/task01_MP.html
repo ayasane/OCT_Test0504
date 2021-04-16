@@ -3,13 +3,13 @@
 <head>
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
     <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
 </head>
 
 <body>
     <script type="text/javascript">
-
       /* 課題に関するコードを以下に書く */
       var fullscreen = {
         type: 'fullscreen',
@@ -17,15 +17,125 @@
         button_label: "全画面表示に切り替え",
         fullscreen_mode: true
       };
-      var welcome = {
-        type: "html-keyboard-response",
-        stimulus: "こんにちは！"
+      
+      var instruction = {
+              type: "html-button-response",
+              stimulus_width : 300,
+          		stimulus:"<p>今から画面に出てくる緑色の四角を追いかけてクリックもしくはタッチする課題を行います。</p>"+
+          		'<img src=img/task01_MP/instruction.jpg></img>'+
+          		"<p>緑の四角は画面のどこかに現れ、クリックもしくはタッチすると移動します。</p>"+
+          		"<p>現れたらすぐにクリックもしくはタッチしてください。</p>"+
+          		"<p>緑の四角は移動するごとに小さくなっていきます。</p>"+
+          		"<p>20回クリックもしくはタッチすると終了です。</p>"+
+          		"<p>練習と本番があります。練習では緑色の四角がクリックもしくはタッチするまで移動しません。</p>"+
+              "<p>本番では5秒間で次の場所に移動します。</p>"+
+          		"<p>画面がきちんと見える位置から画面を見るようにしてください。</p>"+
+          		"<p>次のボタンを押して始めてください。</p>",
+          	   choices: ['始める'],
+          }
+
+      var instructionPractice = {
+        type: "html-button-response",
+        stimulus: "<p>練習をはじめます。</p><p>最初に十字が出るのでみていてください。</p>",
+        choices: ['始める'],
       };
+
+      var instructionMain = {
+        type: "html-button-response",
+        stimulus:"<p>本番をはじめます。</p><p>最初に十字が出るのでみていてください。</p>",
+        choices: ['始める'],
+      };
+
+      var fixation = {
+          type: 'html-keyboard-response',
+          stimulus: '<div style="font-size:60px;">+</div>',
+          choices: jsPsych.NO_KEYS,
+          trial_duration: 2000
+      }
+      var w=window.innerWidth;
+      var h=window.innerHeight;
+      var size=Math.floor(h/4);
+      var reduce=Math.floor(size/20);
+
+      var x=[];var y=[];var boxsize=[];
+      for (var i=0; i<20;i++){
+        boxsize[i]=size-i*reduce;
+        x[i]=Math.floor(Math.random()*(w));
+        if(x[i]+boxsize[i]>w){
+          x[i]=w-boxsize[i];
+        }
+        y[i]=Math.floor(Math.random()*(h));
+        if(y[i]+boxsize[i]>h){
+           y[i]=h-boxsize[i];
+        }
+      }
 
       /* タイムラインの設定 */
       var timeline = [];
-      timeline.push(fullscreen);
-      timeline.push(welcome);
+      var test = [];
+      var maintest = [];
+
+      /*timeline.push(fullscreen);*/
+      timeline.push(instruction,instructionPractice,fixation);
+
+      for(var i=0; i<20; i++){
+          var buttontype=
+          '<button type="button" \
+            style="\
+              width:'+boxsize[i]+'px;\
+              height:'+boxsize[i]+'px;\
+              position:absolute;\
+              left:'+x[i]+'px;\
+              top:'+y[i]+'px;\
+              background-color:green;\
+              color:green;\
+              border-style:none;">+\
+            </button>';
+
+          test[i] = {
+            type: 'html-button-response',
+            stimulus: [],
+            button_html:buttontype,
+            choices: ['　']
+          };
+          timeline.push(test[i]);
+      };
+
+timeline.push(instructionMain,fixation);
+
+/*本番：時間制限あり*/
+      for(var i=0; i<20; i++){
+          var buttontype=
+          '<button type="button" \
+            style="\
+              width:'+boxsize[i]+'px;\
+              height:'+boxsize[i]+'px;\
+              position:absolute;\
+              left:'+x[i]+'px;\
+              top:'+y[i]+'px;\
+              background-color:green;\
+              color:green;\
+              border-style:none;">+\
+            </button>';
+
+          maintest[i] = {
+            type: 'html-button-response',
+            stimulus: [],
+            button_html:buttontype,
+            choices: ['　'],
+            trial_duration: 5000
+          };
+          timeline.push(maintest[i]);
+      };
+
+      /* 終了 */
+      var finish = {
+        type: 'html-keyboard-response',
+        stimulus: ['データを保存中です。'],
+        choices: jsPsych.NO_KEYS,
+        trial_duration: 1500,
+      }
+      timeline.push(finish);
 
       /* 課題開始 */
       jsPsych.init({
@@ -34,7 +144,7 @@
           jsPsych.data.displayData();
         }
       });
-      
+
     </script>
 </body>
 </html>

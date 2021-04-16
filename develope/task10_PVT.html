@@ -3,7 +3,9 @@
 <head>
     <script src="src/jspsych-6.1.0/jspsych.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
     <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/smura-psychomotor-vigilance.js"></script>
     <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
 </head>
 
@@ -17,15 +19,77 @@
         button_label: "全画面表示に切り替え",
         fullscreen_mode: true
       };
-      var welcome = {
-        type: "html-keyboard-response",
-        stimulus: "こんにちは！"
+
+      var instruction = {
+        type: 'html-button-response',
+        stimulus: ['<p>画面上に，赤い枠が表示されます。</br>時々，赤い枠の中に”PUSH!!!”と表示されるので，”PUSH!!!”が現れたら素早く下にあるPUSHボタンを押してください。</br>\
+                    その後，”PUSH!!!”が現れてからあなたがキーを押すまでの時間が表示されます。ここまでの流れを繰り返します。</br>\
+                    いつ”PUSH!!!”が現れるかわからないので，赤い枠の中をよく見ていてください。</p>'],
+        choices: ['NEXT'],
+        prompt: '次の画面へ行くために”NEXT”ボタンを押してください'
       };
+
+      var display_time = function () {
+          var rand = Math.round(Math.random() * 10000) + 2000;
+          console.log("[MAIN] interval duration: " + rand);
+          return rand;
+      };
+
+      var interval = {
+        type: 'html-button-response',
+        stimulus: ['<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div><br>\
+                    <div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><p> </p></div>'],
+        choices: ['PUSH'],
+        //prompt: '"PUSH!!!"が現れたら素早くPUSHボタンを押してください。',
+        trial_duration: display_time
+      }
+
+      var rtime = 0;
+      var countup = {
+        type: "html-button-response",
+        stimulus: ['<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div></br>\
+                    <div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p> PUSH !!! </p></font></div>'],
+        choices: ["PUSH"],
+        //prompt: '"PUSH!!!"が現れたら素早くPUSHボタンを押してください。',
+        trial_duration: 1000,
+        on_finish: function(data) {
+          if (data.rt != null) {
+            rtime = data.rt;
+          } else {
+            rtime = 1000;
+          }
+          console.log(rtime);
+        }
+      }
+
+      var feedback = {
+        type: "html-button-response",
+        choices: ["PUSH"],
+        //prompt: '"PUSH!!!"が現れたら素早くPUSHボタンを押してください。',
+        trial_duration: 500,
+        on_start: function(trial){
+          var all_data = jsPsych.data.get().values();
+          console.log(all_data);
+          if (rtime == null){
+            rtime = 1000;
+          } else {
+            rtime = Math.floor(rtime);
+          }
+          trial.stimulus = ['<div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><img src="img/task10_PVT/rectangle.png" width="300px"/></div><br>\
+                             <div style="position:absolute; top:20%; left:50%; transform:translateX(-50%); -webkit-transform:translateX(-50%); -ms-transform:translateX(-50%);"><font size="12"><p>' + rtime + ' msec</p></font></div>']
+        }
+      }
+
+      var thread = {
+        timeline: [interval, countup, feedback],
+        repetitions: 5
+      }
 
       /* タイムラインの設定 */
       var timeline = [];
       timeline.push(fullscreen);
-      timeline.push(welcome);
+      timeline.push(instruction);
+      timeline.push(thread);
 
       /* 課題開始 */
       jsPsych.init({
@@ -38,3 +102,4 @@
     </script>
 </body>
 </html>
+
