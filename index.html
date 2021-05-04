@@ -1,8 +1,39 @@
 <!DOCTYPE html>
 <html>
-<head></head>
+<head>
+    <script src="src/jspsych-6.1.0/jspsych.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-html-keyboard-response.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-html-button-response.js"></script>
+    <script src="src/jspsych-6.1.0/plugins/jspsych-fullscreen.js"></script>
+    <link rel="stylesheet" href="src/jspsych-6.1.0/css/jspsych.css"></link>
+</head>
+
 <body>
-    <a href="main.html">CognitionBattery</a>
-    <a href="singletest.html">Singletest</a>
+    <script type="text/javascript">
+var timeline=[];
+      var instruction = {
+              type: "html-button-response",
+              stimulus_width : 300,
+          		stimulus:"",
+          	  choices: ['全て行う','一部分を行う']
+          }
+
+timeline.push(instruction);
+
+
+      /* 課題開始 */
+      jsPsych.init({
+        timeline: timeline,
+        on_finish: function() {
+          var select=jsPsych.data.get().last(1).values()[0].button_pressed;
+          if(select==0){
+              window.location = "remoteCBT_CognitiveTask_AllTop.html";
+          }else{
+              window.location = "remoteCBT_CognitiveTask_PartTop.html";
+          };
+        }
+      });
+
+    </script>
 </body>
 </html>
